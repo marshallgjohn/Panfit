@@ -1,0 +1,144 @@
+<div id="container">
+    <span id="title" *ngIf="routines[1] != 'DAY OFF'"> WELCOME BACK {{user.userCredentials.username}}, LETS GET TO WORK</span>
+    <span id="title" *ngIf="routines[1] == 'DAY OFF'"> ENJOY THE DAY OFF {{user.userCredentials.username}}</span>
+    <br/>
+    <span id="title">CURRENT ROUTINE: ****</span>
+    <div id="workout-days">
+        <div class="workout-off">
+            <p><span class="workout-title"> {{dotw[6]}} {{dotw[3]}} {{dotw[7]}}</span></p>
+            <p>{{dotw[0]}}</p>
+            <p>WORKOUT: {{routines[0]}}</p>
+            <p *ngIf="routines[0] != 'DAY OFF'">AVG TIME: 1H 2M</p>
+            
+        </div>
+        <div id="workout-on">
+            <p><span class="workout-title">{{dotw[6]}} {{dotw[4]}} {{dotw[7]}}</span></p>
+            <p>{{dotw[1]}}</p>
+            <p>WORKOUT: {{routines[1]}}</p>
+            <p *ngIf="routines[1] != 'DAY OFF'">AVG TIME: 1H 2M</p>
+            <button  *ngIf="routines[1] != 'DAY OFF'" class="button" type="submit" [name]="TEST" routerLink="/workout">START WORKOUT</button> 
+        </div>
+        <div class="workout-off">
+            <p><span class="workout-title">{{dotw[6]}} {{dotw[5]}} {{dotw[7]}}</span></p>
+            <p>{{dotw[2]}}</p>
+            <p>WORKOUT: {{routines[2]}}</p>
+            <p *ngIf="routines[2] != 'DAY OFF'">AVG TIME: 1H 2M</p>
+        </div>
+    </div>
+
+<hr>
+
+    <div id="stats-section">
+        <div id="last-workout-container">
+            <span>LAST WORKOUT</span>
+            <div id="last-workout-inner" >
+                <ul>
+                    <li>
+                        TOTAL WEIGHT LIFTED:
+                        <ul>
+                            <li>{{lastEntry.totalWeightLifted}}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        SETS COMPLETED:
+                        <ul>
+                            <li> {{lastEntry.numOfSets}}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        WORKOUT NAME:
+                        <ul>
+                            <li >{{lastEntry.routineExercise.routine.routineName}}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        NET WEIGHT LIFTED:
+                        <ul>
+                            <li>+100</li>
+                        </ul>
+                    </li>
+                    <li>
+                        NUMBER OF PR'S:
+                        <ul>
+                            <li>2</li>
+                        </ul>
+                    </li>
+                    <li>
+                        TIME TO COMPLETE:
+                        <ul>
+                            <li>{{lastEntry.workoutLength}}</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="progression-container">
+            <span>PROGRESSION</span>
+            <div id="progression-inner">
+                
+            </div>
+        </div>
+        <div id="history-container">
+            <span>WORKOUT HISTORY</span>
+            <div id="history-inner">
+                <table>
+                    <tr>
+                        <th>DATE</th>
+                        <th>WORKOUT</th>
+                        <th>NET WEIGHT LIFTED</th>
+                        <th>TOTAL WEIGHT LIFTED</th>
+                        <th>SETS COMPELTED</th>
+                        <th># OF PR'S</th>
+                        <th>TIME TO COMPLETE</th>
+                    </tr>
+                    <tr *ngFor="let e of entries">
+                        <td>
+                            {{e.entry_date}}
+                        </td>
+                        <td>
+                            {{e.routineExercise.routine.routineName}}
+                        </td>
+                        <td>
+                            +100 lbs
+                        </td>
+                        <td>
+                             {{e.totalWeightLifted}} lbs
+                        </td>
+                        <td>
+                            {{e.numOfSets}}
+                        </td>
+                        <td>
+                            4
+                        </td>
+                        <td>
+                            {{e.workoutLength}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            7/3/20
+                        </td>
+                        <td>
+                            PULL
+                        </td>
+                        <td>
+                            +100 lbs
+                        </td>
+                        <td>
+                            5500 lbs
+                        </td>
+                        <td>
+                            35
+                        </td>
+                        <td>
+                            4
+                        </td>
+                        <td>
+                            1H 3M 22S
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

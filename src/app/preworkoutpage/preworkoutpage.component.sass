@@ -1,0 +1,152 @@
+#container
+    background-color: #0F5E76
+    width: 95%
+    margin-left: 2.5%
+    margin-right: 2.5%
+    height: auto
+    font-family: 'Rubik', sans-serif
+    font-weight: 600
+    margin-top: 3%
+    padding-top: 1%
+    text-align: center
+    display: inline-block
+
+#title
+    text-align: center
+    font-size: 2em
+    font-weight: 600
+    
+
+.workout-off
+    background-color: #126F8C
+    text-align: center
+    width: 20%
+    height: 100%
+    padding-top: 0.5em
+    font-size: 10pt
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+        
+
+#workout-on
+    background-color: #188DB1
+    text-align: center
+    width: 20%
+    height: 120%
+    flex-basis: 20%
+    font-size: 16pt
+    padding-top: 0.5em
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+    padding-bottom: 30px
+    
+    p 
+        padding-top: 10px
+
+
+#workout-days
+    display: flex
+    flex-direction: row
+    justify-content: space-around
+    align-items: center
+    height: 30%
+    padding-top: 2.5%
+
+.button
+    margin-top: 10px
+    padding: 12px
+    font-weight: 600
+    font-size: 14pt
+
+.workout-title
+    font-size: 100% * 1.4
+
+hr
+    margin: 50px
+    color: white
+    
+
+#stats-section
+    display: grid
+    grid-template-columns: repeat(2,auto)
+    grid-template-row: auto
+
+%container
+    width: 90%
+    height: 23em
+    background-color: #188DB1
+    padding-top: 20px
+    padding-bottom: 20px
+    margin-left: auto
+    margin-right: auto
+    box-shadow: 0px 4px 4px #0b3b49
+
+%inner
+    background-color: #C6FDFF
+    height: 80%
+    width: 90%
+    margin-left: auto
+    margin-right: auto
+    margin-top: 10px
+    padding: 0 20px 0 20px
+
+#last-workout-container
+    @extend %container
+    width: 70%
+    span
+        font-size: 24pt   
+
+
+#last-workout-inner
+    @extend %inner
+
+    ul
+        padding-top: 10px
+        display: grid
+        font-size: 14pt
+        list-style: none
+        grid-gap: 0.5em
+        color: black
+        grid-template-rows: repeat(3,auto)
+        grid-template-columns: repeat(2, auto)
+        justify-content: space-around
+        
+
+
+#progression-container
+    @extend %container
+    span
+        font-size: 24pt
+
+
+
+#progression-inner
+    @extend %inner
+
+
+#history-container
+    @extend %container
+    margin-top: 30px
+    grid-column-start: span 2
+    height: 35em
+
+    span
+        font-size: 24pt
+        
+
+#history-inner
+    @extend %inner
+    color: black
+    
+    table
+        width: 100%
+        font-size: 12pt
+        border-spacing: 0
+            
+        th
+            background-color: #29CDFF
+            padding-top: 10px
+            padding-bottom: 10px
+        td
+            padding-top: 20px
+
+    
+

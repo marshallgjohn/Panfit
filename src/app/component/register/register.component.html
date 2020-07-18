@@ -1,0 +1,33 @@
+<div id="login-box">
+    <h1 id="login">REGISTER</h1>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <label for="username">Username:</label> 
+    <div class="form-group">
+    <input type="text" class="form-control" id="username" formControlName="username" [ngClass]="{ 'is-invalid': submitted && f.username.errors }"/>
+    </div>
+    <div class="invalid-feedback" *ngIf="f.username.errors && submitted">
+        Please enter a username.
+    </div>
+
+    <label for="email">Email:</label> 
+    <div class="form-group">
+    <input type="text" class="form-control" id="email" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }"/>
+    </div>
+    <div class="invalid-feedback" *ngIf="f.email.errors && submitted">
+        Please enter an email.
+    </div>
+
+    <label for="password">Password:</label> 
+    <div class="form-group">
+    <input type="password" class="form-control" id="password" formControlName="password" [ngClass]="{'is-invalid': submitted && f.password.errors }"/>
+    </div>
+    <div class="invalid-feedback" *ngIf="f.password.errors && submitted">
+        Please enter a password.
+    </div>
+
+    <button type="submit">Submit</button>
+    </form>
+    Already a user? <a routerLink="/login">Login</a>
+</div>
+

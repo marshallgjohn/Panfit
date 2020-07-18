@@ -1,0 +1,82 @@
+<div id="container">
+
+    <div *ngIf="createModal" id="create-modal-background">
+        <div id="create-add-container">
+            <button id="create-close-modal" (click)="showCreateModal()">X</button>
+            <div id="create-modal-components">
+                <label id="create-modal-label">Create Custom Exercise</label>
+                <input type="input" class="workout-info" id="exercise-name-input" placeholder="Exercise Name">
+                <label id="create-input-modal-label">Muscle Group:</label>
+                <select name="Muscle" id="muscle-select">
+                    <option *ngFor="let muscle of muscleList" value={{muscle.id}}>
+                        {{muscle.muscleGroup}}
+                    </option>
+                </select>
+                <label id="create-input-modal-label">Equipment Used:</label>
+                <select name="Equipment" id="equipment-select">
+                    <option *ngFor="let equipment of equipmentList" value={{equipment.id}}>
+                        {{equipment.equipmentName}}
+                    </option>
+                </select>
+
+            </div>
+            <button class="button" id="create-modal-submit" (click)="postExercise()">CREATE EXERCISE</button>
+        </div>
+    </div>
+    
+    <div *ngIf="modal" id="modal-background">
+        <div id="add-container">
+            <button id="close-modal" (click)="showModal()">X</button>
+            <div id="modal-components">
+                <label id="modal-label">Exercise List</label>
+                <input type="text" id="modal-search" placeholder="Search..."/>
+                <div id="modal-list">
+                    <button *ngFor="let exercise of exerciseList" (click)="onClick(exercise)">{{exercise.exerciseName}}</button>
+                </div>
+            </div>
+            <button class="button" id="modal-submit" (click)="showCreateModal()">CREATE CUSTOM EXERCISE</button>
+        </div>
+    </div>
+    <button id="workout-done"  class="button" (click)="postAll()">DONE</button>
+    <form [formGroup]="workoutForm">
+    <div>
+        <h1 *ngIf="!routineInput">Routine Name:</h1>
+        <select formControlName="routine"  name="Routine" id="routine-select" #select (change)="onOptionSelect(select.value)">
+            <option *ngFor="let routine of routineList" [ngValue]="routine" value="{{routine.id}}" >{{routine.workoutName}}</option>
+            <option value="New" selected>New Routine</option>
+        </select>
+    </div>
+    <div>
+        <input *ngIf="routineInput" class="workout-info" type="text" id="routine_name" placeholder="Routine Name"/>
+    </div>
+    <div>
+        <input  class="workout-info" id="name" type="text" required placeholder="WORKOUT NAME"/>
+        <select id="day-select">
+            <option *ngFor="let day of routineDotw" value="{{day.num}}">{{day.name}}</option>
+        </select>
+    </div>
+    <div id="exercise-list">
+        <div *ngFor="let exercise of exercises" class="exercise-list-item" id="{{exercise}}">
+            <div id="exercise-item-name">{{exercise.exerciseName}}</div>
+            <div>
+                <input type="number" required id="{{exercise.id}}-weight"  class="list-lbs-input" min=1 max=999 placeholder="300"/>lbs
+            </div>
+            <div>
+                <input type="number" required id="{{exercise.id}}-sets" class="list-reps-input" min=1 max=99 placeholder="4"/>
+                x
+                <input type="number" required id="{{exercise.id}}-min-reps"class="list-reps-min-input" min=1 max=99 placeholder="8"/>
+                -
+                <input type="number" required id="{{exercise.id}}-max-reps" class="list-reps-max-input" min=1 max=99 placeholder="12"/>
+            </div>
+            <div>
+                <input type="number" required id="{{exercise.id}}-minutes" class="list-reps-min-input" min=1 max=99 placeholder="2"/>
+                M
+                <input type="number" required id="{{exercise.id}}-seconds" class="list-reps-min-input" min=1 max=99 placeholder="30"/>
+                S
+            </div>
+            <button class="delete-button" (click)="deleteElement(exercise)">X</button>
+        </div>
+    </div>
+    </form>
+    <button class="button" (click)="showModal()">ADD EXERCISE</button>
+</div>

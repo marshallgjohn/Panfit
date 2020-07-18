@@ -1,0 +1,45 @@
+<div id="end-section">
+    <div id="rest-timer">
+        REST: {{restTime}}
+    </div>
+    <div>
+        WORKOUT END
+    </div>
+    <div id="elapsed-timer">
+        {{elapsedTime}}
+    </div>
+</div>
+
+<div id="container">
+    <h1>{{routine.routineName}}</h1>
+    <div *ngFor="let exercise of exercises" id="exercise-container">
+        <div id="exercise-title-bar">
+            <div id="exercise-title">
+                {{exercise.exercise.exerciseName}}
+            </div>
+            <div id="exercise-rest-title">
+                REST TIME: {{exercise.routine_rest}} S
+            </div>
+        </div>
+        <div id="exercise-inner-container">
+            <table id="exercise-table">
+                <tr>
+                    <th>SETS</th>
+                    <th>PREV</th>
+                    <th>LBS</th>
+                    <th>REPS</th>
+                    <th>GOALS</th>
+                    <th></th>
+                </tr>
+                <tr *ngFor="let item of setArray(exercise.routine_sets); let i = index;">
+                    <td>{{i+1}}</td>
+                    <td>0</td>
+                    <td><input type="text" required/></td>
+                    <td><input type="text" required/></td>
+                    <td>{{exercise.routine_goal_reps_min}} - {{exercise.routine_goal_reps_max}}</td>
+                    <td><button (click)="restTimer(exercise.routine_rest)">DONE</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
