@@ -18,18 +18,18 @@ public class RoutineEntriesController {
   public RoutineEntriesController(RoutineEntriesService routineEntriesService) {
     this.routineEntriesService = routineEntriesService;
   }
-
+/*
   @GetMapping
   List<RoutineEntries> getAllEntries() {
     return routineEntriesService.getAllEntries((((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
   };
 
-  @GetMapping(path="sets/{id}")
-  public int countAll(@PathVariable("id") int id) {
-    return routineEntriesService.countSetsBySessionsId(id);
-  }
+  //@GetMapping(path="sets/{id}")
+  //public int countAll(@PathVariable("id") int id) {
+   // return routineEntriesService.countSetsBySessionsId(id);
+  //}
 
   @GetMapping(path = "last/{id}")
-  public Optional<RoutineEntries> getLastEntry(@PathVariable("id")int id) {return routineEntriesService.getLastEntry(id);}
+  public Optional<RoutineEntries> getLastEntry(@PathVariable("id")int id) {return routineEntriesService.getLastEntry(id);}*/
 }
 

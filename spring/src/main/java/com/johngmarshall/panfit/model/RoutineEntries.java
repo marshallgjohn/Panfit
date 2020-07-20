@@ -1,18 +1,9 @@
 package com.johngmarshall.panfit.model;
 
-import javassist.Loader;
-import org.hibernate.annotations.Formula;
-import org.springframework.data.jpa.repository.Query;
-
 import javax.persistence.*;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class RoutineEntries {
@@ -21,18 +12,14 @@ public class RoutineEntries {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @ManyToOne
-  private RoutineExercise routineExercise;
 
   @OneToMany
   private List<Sets> set;
 
-  @ManyToOne
-  private Sessions sessions;
 
-  private Date entry_date;
+  private Date entryDate;
 
-  private long workoutTime;
+  private long entryLength;
 
   @Transient
   private String workoutLength;
@@ -46,21 +33,17 @@ public class RoutineEntries {
 
   protected RoutineEntries(){}
 
-  public RoutineEntries(int id, RoutineExercise routineExercise, List<Sets> set, Sessions sessions, Date entry_date, long workoutTime) {
+  public RoutineEntries(int id, RoutineExercise routineExercise, List<Sets> set, Date entryDate, long entryLength) {
     this.id = id;
     this.set = set;
-    this.sessions = sessions;
-    this.entry_date = entry_date;
-    this.routineExercise = routineExercise;
-    this.workoutTime = workoutTime;
-
-
+    this.entryDate = entryDate;
+    this.entryLength = entryLength;
   }
 
   public String getWorkoutLength() {
 
-    int seconds = (int)workoutTime % 60;
-    int hours = (int)workoutTime / 60;
+    int seconds = (int)entryLength % 60;
+    int hours = (int)entryLength / 60;
     int minutes = hours % 60;
     hours /= 60;
 
@@ -81,19 +64,14 @@ public class RoutineEntries {
     return id;
   }
 
-  public RoutineExercise getRoutineExercise() {
-    return routineExercise;
-  }
 
   public List<Sets> getSet() {
     return set;
   }
 
-  public Sessions getSessions() {
-    return sessions;
+
+  public String getEntryDate() {
+    return new SimpleDateFormat("MM/dd/yyyy").format(entryDate);
   }
 
-  public String getEntry_date() {
-    return new SimpleDateFormat("MM/dd/yyyy").format(entry_date);
-  }
 }
