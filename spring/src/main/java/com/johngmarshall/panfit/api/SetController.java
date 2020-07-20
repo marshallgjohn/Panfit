@@ -30,6 +30,11 @@ public class SetController {
     return setService.addSet(set);
   }
 
+  @PostMapping("all")
+  List<Sets> addAllSets(@RequestBody @NonNull List<Sets> sets) {
+    return this.setService.addAllSets(sets);
+  }
+
   @GetMapping
   public List<Sets> findAll() {
     return setService.findAll();

@@ -3,6 +3,7 @@ package com.johngmarshall.panfit.api;
 
 import com.johngmarshall.panfit.model.RoutineEntries;
 import com.johngmarshall.panfit.service.RoutineEntriesService;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class RoutineEntriesController {
   @GetMapping
   List<RoutineEntries> getAllEntries() {
     return routineEntriesService.getAllEntries((((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
+  }
+
+  @PostMapping
+  RoutineEntries addEntry(@RequestBody @NonNull RoutineEntries entry) {
+    return routineEntriesService.addEntry(entry);
   }
 /*
   //@GetMapping(path="sets/{id}")

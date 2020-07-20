@@ -1,9 +1,15 @@
+import { RoutineExercise } from './routineExercise';
+import { RoutineEntry } from './routineEntry';
+
 export class Sets {
     constructor(
         public id: string,
-        public set_number: number,
-        public set_reps: number,
-        public set_weight: number
+        public routineEntries: RoutineEntry,
+        public routineExercise: RoutineExercise,
+        public setNumber: number,
+        public setReps: number,
+        public setWeight: number,
+        public setPrevWeight: number
     ) {
 
     }

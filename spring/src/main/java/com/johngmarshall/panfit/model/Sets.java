@@ -1,5 +1,6 @@
 package com.johngmarshall.panfit.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ public class Sets {
 
 
   @ManyToOne
-  @JsonIgnore
+  @JsonBackReference
   private RoutineEntries routineEntries;
 
   @ManyToOne
@@ -63,5 +64,9 @@ public class Sets {
 
   public int getSetPrevWeight() {
     return setPrevWeight;
+  }
+
+  public void setRoutineEntries(RoutineEntries routineEntries) {
+    this.routineEntries = routineEntries;
   }
 }

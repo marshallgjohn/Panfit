@@ -26,6 +26,10 @@ public class SetService {
     return setsRepository.save(set);
   }
 
+  public List<Sets> addAllSets(List<Sets> sets) {
+    return (List<Sets>) setsRepository.saveAll(sets);
+  }
+
   public List<Sets> findAll() {
     return setsRepository.findAll();
   }

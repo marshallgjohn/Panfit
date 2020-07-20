@@ -31,15 +31,16 @@
                     <th>GOALS</th>
                     <th></th>
                 </tr>
-                <tr *ngFor="let item of setArray(exercise.routine_sets); let i = index;">
+                <tr *ngFor="let item of setArray(exercise.routine_sets); let i = index;" >
                     <td>{{i+1}}</td>
                     <td>0</td>
-                    <td><input type="text" required/></td>
-                    <td><input type="text" required/></td>
+                    <td><input type="text" required id="{{exercise.id}}-{{i+1}}-lbs" /></td>
+                    <td><input type="text" required id="{{exercise.id}}-{{i+1}}-reps" /></td>
                     <td>{{exercise.routine_goal_reps_min}} - {{exercise.routine_goal_reps_max}}</td>
                     <td><button (click)="restTimer(exercise.routine_rest)">DONE</button></td>
                 </tr>
             </table>
         </div>
     </div>
+    <button (click)="postWorkout()">Aq jeez</button>
 </div>
