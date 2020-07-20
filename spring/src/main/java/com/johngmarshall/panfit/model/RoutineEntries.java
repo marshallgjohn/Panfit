@@ -16,6 +16,9 @@ public class RoutineEntries {
   @OneToMany
   private List<Sets> set;
 
+  @ManyToOne
+  private Routine routine;
+
 
   private Date entryDate;
 
@@ -33,11 +36,16 @@ public class RoutineEntries {
 
   protected RoutineEntries(){}
 
-  public RoutineEntries(int id, RoutineExercise routineExercise, List<Sets> set, Date entryDate, long entryLength) {
+  public RoutineEntries(int id, List<Sets> set, Routine routine, Date entryDate, long entryLength) {
     this.id = id;
     this.set = set;
+    this.routine = routine;
     this.entryDate = entryDate;
     this.entryLength = entryLength;
+  }
+
+  public Routine getRoutine() {
+    return routine;
   }
 
   public String getWorkoutLength() {

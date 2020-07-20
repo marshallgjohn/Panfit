@@ -15,20 +15,16 @@ public class RoutineEntriesService {
   public RoutineEntriesService(RoutineEntriesRepository routineEntriesRepository) {
     this.routineEntriesRepository = routineEntriesRepository;
   }
-/*
+
 
   public List<RoutineEntries> getAllEntries(String username) {
-    return routineEntriesRepository.findRoutineEntriesByRoutineExerciseRoutineWorkoutUserUserCredentialsUsername(username);
-  };
-
-  //public int countSetsBySessionsId(int id) {
-   // return routineEntriesRepository.countAllSetsBySessionsId(id);
-  //}
-
-  public Optional<RoutineEntries> getLastEntry(int id) {
-    return routineEntriesRepository.getLastEntry(id);
+    return routineEntriesRepository.findRoutineEntriesByRoutineWorkoutUserUserCredentialsUsername(username);
   }
-*/
+
+/*
+  public Optional<RoutineEntries> getLastEntry(int id) {
+    *//*return routineEntriesRepository.getLastEntry(id);*//*
+  }*/
 
 }
 

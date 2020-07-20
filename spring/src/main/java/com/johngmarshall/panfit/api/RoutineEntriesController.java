@@ -13,17 +13,17 @@ import java.util.Optional;
 @RequestMapping("/api/entries")
 @RestController
 public class RoutineEntriesController {
-  private RoutineEntriesService routineEntriesService;
+  private final RoutineEntriesService routineEntriesService;
 
   public RoutineEntriesController(RoutineEntriesService routineEntriesService) {
     this.routineEntriesService = routineEntriesService;
   }
-/*
+
   @GetMapping
   List<RoutineEntries> getAllEntries() {
     return routineEntriesService.getAllEntries((((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
-  };
-
+  }
+/*
   //@GetMapping(path="sets/{id}")
   //public int countAll(@PathVariable("id") int id) {
    // return routineEntriesService.countSetsBySessionsId(id);

@@ -11,4 +11,6 @@ public interface SetsRepository extends CrudRepository<Sets,Long> {
   @Query(value="select * from sets where routine_entries_id=:id",nativeQuery=true)
   List<Sets> getRoutineByEntryId(int id);
 
+  List<Sets> findAll();
+
 }

@@ -1,5 +1,7 @@
 package com.johngmarshall.panfit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +13,7 @@ public class Sets {
 
 
   @ManyToOne
+  @JsonIgnore
   private RoutineEntries routineEntries;
 
   @ManyToOne

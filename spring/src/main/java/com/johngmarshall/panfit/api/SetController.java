@@ -24,5 +24,15 @@ public class SetController {
   List<Sets> getSetsByEntryId(@PathVariable("id")int id) {
     return setService.getRoutineByEntryId(id);
   }
+
+  @PostMapping
+  Sets addSet(@RequestBody @NonNull Sets set) {
+    return setService.addSet(set);
+  }
+
+  @GetMapping
+  public List<Sets> findAll() {
+    return setService.findAll();
+  }
 }
 

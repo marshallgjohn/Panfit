@@ -22,5 +22,13 @@ public class SetService {
     return setsRepository.getRoutineByEntryId(routine_entries_id);
   }
 
+  public Sets addSet(Sets set) {
+    return setsRepository.save(set);
+  }
+
+  public List<Sets> findAll() {
+    return setsRepository.findAll();
+  }
+
 }
 
