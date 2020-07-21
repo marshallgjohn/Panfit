@@ -14,6 +14,9 @@ import { CreateworkoutpageComponent } from './createworkoutpage/createworkoutpag
 import { WorkoutComponent } from './component/workout/workout.component';
 import { RegisterComponent } from './component/register/register.component';
 
+import { HomepageComponent } from './homepage/homepage.component';
+import { HomeComponent } from './component/home/home.component';
+
 
 @NgModule({
   declarations: [
@@ -23,7 +26,9 @@ import { RegisterComponent } from './component/register/register.component';
     PreworkoutpageComponent,
     CreateworkoutpageComponent,
     WorkoutComponent,
-    RegisterComponent
+    RegisterComponent,
+    HomepageComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
