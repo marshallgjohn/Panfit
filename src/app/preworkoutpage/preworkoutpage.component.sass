@@ -1,3 +1,8 @@
+%center-horizontal
+  display: flex
+  justify-content: center
+  align-items: center
+    
 #container
     background-color: #0F5E76
     width: 95%
@@ -148,5 +153,96 @@ hr
         td
             padding-top: 20px
 
+
+#stats-section-undef
+    font-size: 27pt
+    padding-bottom: 50px
+
+#buttons
+    button
+        margin-left: 25px
+
+#modal-background
+    @extend %center-horizontal
+    position: absolute
+    left: 0
+    top: 0
+    background-color: rgb(0,0,0,0.55)
+    height: 100%
+    width: 100%
+
+
+#add-container
+    height: 25%
+    width: 25%
+    border-radius: 30px
+    background-color: #DB504A
+    position: relative
+
+#close-modal
+    background-color: rgb(0,0 ,0,0 )
+    color: white
+    position: absolute
+    border: none
+    left: 15px
+    top: 15px
+    font-weight: 800
+    font-size: 20pt
+
+#modal-search
+    left: 1.5em
+    font-size: 24pt
+    margin-top: 2em
+    height: 2em
+    color: #767676
+    width: 90%
+    font-family: 'Rubik', sans-serif
+    background-color: white
+    border: none
     
+
+#modal-label
+    margin: 1em
+    font-size: 24pt
+    font-weight: 600
+
+#modal-list
+    margin-top: 3em
+    width: 90%
+    overflow-y: scroll
+    vertical-align: middle
+    height: 35vh
+    display: flex
+    flex-direction: column
+    margin-left: 5%
+    margin-right: 5%
+    
+
+
+    button
+        height: 2em
+        border: none
+        font-size: 32pt
+        font-weight: 600
+        font-family: 'Rubik', sans-serif
+        color: white
+
+    :nth-child(odd)
+        background-color: #9E2E2A
+    :nth-child(even)
+        background-color: #701F1C
+
+
+#modal-components
+    display: flex
+    flex-direction: column
+    align-items: center
+    align-content: center
+    
+
+#modal-submit 
+    background-color: #2E9DC0
+    margin: 1.25em
+    padding: 0.5em
+
 

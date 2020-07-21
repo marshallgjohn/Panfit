@@ -32,4 +32,8 @@ export class ApiService {
     return this.http.post<any>(`${this.baseUrl}${type}`,object,httpOptions);
   }
 
+  put(type,object?) {
+    return this.http.put<any>(`${this.baseUrl}/${type}/${object}`,null);
+  }
+
 }

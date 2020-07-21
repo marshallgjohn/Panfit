@@ -3,6 +3,8 @@ package com.johngmarshall.panfit.service;
 
 import com.johngmarshall.panfit.dao.CurrentWorkoutRepository;
 import com.johngmarshall.panfit.model.CurrentWorkout;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +19,10 @@ public class CurrentWorkoutService {
 
   public Optional<CurrentWorkout> getCurrentWorkout(String username) {
     return currentWorkoutRepository.findCurrentWorkoutByUserUserCredentialsUsername(username);
+  }
+
+  public int updateCurrentWorkout(int wid) {
+    return currentWorkoutRepository.updateCurrentWorkout(wid,((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
   }
 
  /*  }

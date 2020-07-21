@@ -7,6 +7,7 @@ import {RoutineEntry} from '../model/routineEntry';
 import { AppRoutingModule } from '../app-routing.module';
 import {DataService} from '../services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import {CurrentWorkout} from '../model/currentWorkout';
 
 @Component({
   selector: 'app-preworkoutpage',
@@ -19,17 +20,20 @@ export class PreworkoutpageComponent implements OnInit {
   workout: Workout;
   dotw: String[];
   routines: String[];
+  workoutList: Workout[];
   entries: RoutineEntry[];
   lastEntry: RoutineEntry;
   test: String;
+  currentWorkout: CurrentWorkout;
   currentRoutine: Routine;
+  private _modal: boolean = false;
 
 
   constructor(private apiService: ApiService, private data: DataService, private router: Router) { }
 
   ngOnInit(): void {
       this.data.currentRoutine.subscribe(r => this.currentRoutine = r);
-
+      this.apiService.getAll("current").subscribe(r => this.currentWorkout = r);
 
       this.apiService.getAll("routines").subscribe((data: Routine[]) => {
 
@@ -37,6 +41,7 @@ export class PreworkoutpageComponent implements OnInit {
           this.router.navigateByUrl('/create-workout');
         }
          this.routines = this.initRoutines(data);
+
          
          
       });
@@ -48,6 +53,10 @@ export class PreworkoutpageComponent implements OnInit {
 
       this.apiService.getAll("users").subscribe((data: User) => {
         this.user = data;
+     });
+
+     this.apiService.getAll("workouts").subscribe((data: Workout[]) => {
+        this.workoutList = data;
      });
       this.dotw = this.initDotw();
   }
@@ -108,6 +117,10 @@ export class PreworkoutpageComponent implements OnInit {
     return ret;
   }
 
+  updateCurrentWorkout() {
+    this.apiService.put("current",Number((<HTMLSelectElement>document.getElementById('current-select')).value)).subscribe()
+  }
+
   changeRoutine(rout: Routine) {
     this.data.changeRoutine(rout);
   }
@@ -120,4 +133,14 @@ export class PreworkoutpageComponent implements OnInit {
     return null;
   }
 
+  showModal(): void {
+    this._modal = !this._modal;
+  }
+
+  get modal() {
+    return this._modal
+  }
+  set modal(value: boolean) {
+    this._modal = value;
+  }
 }

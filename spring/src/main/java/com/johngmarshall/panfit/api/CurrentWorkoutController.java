@@ -28,4 +28,9 @@ public class CurrentWorkoutController {
     return currentWorkoutService.getCurrentWorkout((((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
   }
 
+  @PutMapping("{id}")
+  public int updateCurrentWorkout(@PathVariable("id") int wid) {
+    return currentWorkoutService.updateCurrentWorkout(wid);
+  }
+
 }

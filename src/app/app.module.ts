@@ -16,6 +16,8 @@ import { RegisterComponent } from './component/register/register.component';
 
 import { HomepageComponent } from './homepage/homepage.component';
 import { HomeComponent } from './component/home/home.component';
+import { CommonModule } from '@angular/common';
+import { PreworkoutComponent } from './component/preworkout/preworkout.component';
 
 
 @NgModule({
@@ -29,6 +31,7 @@ import { HomeComponent } from './component/home/home.component';
     RegisterComponent,
     HomepageComponent,
     HomeComponent,
+    PreworkoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,6 +40,7 @@ import { HomeComponent } from './component/home/home.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    CommonModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},

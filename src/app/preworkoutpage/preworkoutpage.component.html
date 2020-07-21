@@ -1,8 +1,24 @@
+<div *ngIf="modal" id="modal-background">
+    <div id="add-container">
+        <button id="close-modal" (click)="showModal()">X</button>
+        <div id="modal-components">
+            <label id="modal-label">Routine List</label>
+            <select id="current-select">
+                <option *ngFor="let routine of workoutList" [value]="routine.id">{{routine.workoutName}}</option>
+            </select>
+        </div>
+        <button class="button" id="modal-submit" (click)="updateCurrentWorkout()">CHOOSE NEW ROUTINE</button>
+    </div>
+</div>
+
 <div id="container">
     <span id="title" *ngIf="routines[1] != 'DAY OFF'"> WELCOME BACK {{user.userCredentials.username}}, LETS GET TO WORK</span>
     <span id="title" *ngIf="routines[1] == 'DAY OFF'"> ENJOY THE DAY OFF {{user.userCredentials.username}}</span>
     <br/>
-    <span id="title">CURRENT ROUTINE: ****</span>
+    <span id="title">CURRENT ROUTINE: {{currentWorkout.workout.workoutName}}</span><br>
+    <span id="title">CURRENT WORKOUT: {{routines[1]}}</span>
+    
+
     <div id="workout-days">
         <div class="workout-off">
             <p><span class="workout-title"> {{dotw[6]}} {{dotw[3]}} {{dotw[7]}}</span></p>
@@ -16,7 +32,7 @@
             <p>{{dotw[1]}}</p>
             <p>WORKOUT: {{routines[1]}}</p>
             <p *ngIf="routines[1] != 'DAY OFF'">AVG TIME: 1H 2M</p>
-            <button  *ngIf="routines[1] != 'DAY OFF'" class="button" type="submit" [name]="TEST" routerLink="/workout">START WORKOUT</button> 
+            <button  *ngIf="routines[1] != 'DAY OFF'" class="button" type="submit" routerLink="/workout">START WORKOUT</button> 
         </div>
         <div class="workout-off">
             <p><span class="workout-title">{{dotw[6]}} {{dotw[5]}} {{dotw[7]}}</span></p>
@@ -27,8 +43,12 @@
     </div>
 
 <hr>
-
-    <div id="stats-section">
+    <div id="buttons">
+        <button class="button" routerLink="/create-workout">CREATE/EDIT ROUTINE</button>
+        <button class="button" (click)="showModal()">CHANGE CURRENT ROUTINE</button>
+    </div>
+<hr>
+    <div id="stats-section" *ngIf="lastEntry.routineExercise !== undefined">
         <div id="last-workout-container">
             <span>LAST WORKOUT</span>
             <div id="last-workout-inner" >
@@ -141,4 +161,5 @@
             </div>
         </div>
     </div>
+    <div id="stats-section-undef" *ngIf="lastEntry.routineExercise === undefined">Once you complete one workout, all of your stats will be listed in this area!</div>
 </div> 
