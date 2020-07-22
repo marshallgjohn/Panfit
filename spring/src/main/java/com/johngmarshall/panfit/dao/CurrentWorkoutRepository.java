@@ -17,4 +17,5 @@ public interface CurrentWorkoutRepository extends CrudRepository<CurrentWorkout,
   @Transactional
   @Query(value = "update current_workout cw set cw.workout_id = :wid where cw.user_id =(select id from user where username=:cid)",nativeQuery = true)
   int updateCurrentWorkout(int wid,String cid);
+
 }

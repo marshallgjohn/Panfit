@@ -51,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers(HttpMethod.POST, tokenProperties.getLoginPath()).permitAll()
       .antMatchers(HttpMethod.POST, "/api/users").permitAll()
       .antMatchers(HttpMethod.GET, "/api/users").permitAll()
+      .antMatchers(HttpMethod.GET,"/api/**").permitAll()
       .antMatchers("/api/users/**").permitAll()
       .antMatchers("/api/**").authenticated()
       .anyRequest().permitAll();

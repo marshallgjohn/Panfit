@@ -20,6 +20,8 @@ import { CurrentWorkout } from '../model/currentWorkout';
 
 //TODO: add delete button for workouts/routines
 
+//FIXME: if first routine make it the current routine for the user
+//SHould be fixed?
 export class CreateworkoutpageComponent implements OnInit {
 
   private _modal: boolean = false;
@@ -39,6 +41,7 @@ export class CreateworkoutpageComponent implements OnInit {
   exercises: Exercise[] = []
   exerciseList: Exercise[]
 
+  currentWorkout: Workout;
 
   routineList: Workout[];
   workoutForm: FormGroup;
@@ -86,6 +89,10 @@ export class CreateworkoutpageComponent implements OnInit {
 
     this.apiService.getAll("routineexercises").subscribe(data => {
       this.routineModalList = data;
+    })
+
+    this.apiService.getAll("user").subscribe(data => {
+      this.currentWorkout = data.workout
     })
 
 
@@ -154,6 +161,7 @@ onWorkoutSelect() {
     this._dayInput = true;
     this._workoutInput = true;
     this.routineCurrentExercises = [] 
+
   } else {
     this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
 
@@ -214,7 +222,14 @@ onWorkoutSelect() {
         null))
         .subscribe(f => 
           {
-            //console.log(f);
+            console.log(f)
+            if(this.currentWorkout == null) {
+              this.apiService.post("/current",new CurrentWorkout(null,data,f.body)).subscribe(current => {
+                this.currentWorkout = current;
+              });
+            }
+            
+
             this.apiService.post("/routines", 
             new Routine(
               null,
@@ -243,6 +258,7 @@ onWorkoutSelect() {
                 this.apiService.post("/routineexercises",JSON.stringify(postExercises)).subscribe();
               });
             
+              
           });
     });
     } else {

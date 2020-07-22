@@ -9,9 +9,9 @@ public class CurrentWorkout {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @OneToOne
+  @OneToOne(cascade = CascadeType.MERGE)
   private  User user;
-  @OneToOne
+  @OneToOne(cascade = CascadeType.MERGE)
   private Workout workout;
   //private final String workoutName;
 
