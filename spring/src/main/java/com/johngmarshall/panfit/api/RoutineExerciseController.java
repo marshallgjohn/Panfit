@@ -38,4 +38,9 @@ public class RoutineExerciseController {
   public Iterable<RoutineExercise> addRoutineExercise(@RequestBody @NonNull List<RoutineExercise> exercise) {
     return routineExerciseRepository.saveAll(exercise);
   }
+
+  @DeleteMapping
+  public void deleteRoutineExercises(@RequestBody @NonNull List<RoutineExercise> exercises) {
+    routineExerciseService.deleteRoutineExercises(exercises);
+  }
 }

@@ -19,9 +19,10 @@ public class Routine {
   private int routineDay;
 
 
-  @ManyToOne(fetch = FetchType.LAZY)
 
+  @ManyToOne(fetch = FetchType.LAZY)
   private Workout workout;
+
 
   protected Routine() {
 
@@ -34,6 +35,7 @@ public class Routine {
     this.routineDay = routineDay;
     this.workout = workout;
   }
+
 
   public int getId() {
     return id;

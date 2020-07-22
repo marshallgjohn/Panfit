@@ -38,6 +38,7 @@ public class WorkoutController {
     return workoutService.addWorkout(workout);
   }
 
+
 /*  @GetMapping
   public List<Workout> getWorkoutByUsername() {
     //System.out.println(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());

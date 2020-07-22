@@ -5,6 +5,8 @@ import com.johngmarshall.panfit.dao.RoutineRepository;
 import com.johngmarshall.panfit.dao.WorkoutRepository;
 import com.johngmarshall.panfit.model.Routine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,5 +39,12 @@ public class RoutineService {
     return  routineRepository.save(routine);
   }
 
+  public int updateRoutineDotw(int day) {
+    return routineRepository.updateRoutineDotw(day,((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+  }
+
+  public void deleteRoutines (List<Routine> routines) {
+    routineRepository.deleteAll(routines);
+  }
 }
 

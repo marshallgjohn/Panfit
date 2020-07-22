@@ -20,5 +20,8 @@ public class RoutineExerciseService {
   public List<RoutineExercise> getAllRoutineExercisesByRoutineId(int id) {
     return routineExerciseRepository.findRoutineExercisesByRoutineId(id);
   }
+  public void deleteRoutineExercises(List<RoutineExercise> res){
+    routineExerciseRepository.deleteAll(res);
+  }
 
 }

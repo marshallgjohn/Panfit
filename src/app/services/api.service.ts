@@ -36,4 +36,17 @@ export class ApiService {
     return this.http.put<any>(`${this.baseUrl}/${type}/${object}`,null);
   }
 
+  putAllObjects(type,object) {
+    return this.http.put<any>(`${this.baseUrl}/${type}`,object);
+  }
+  
+  delete(type,object) {
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      observe: 'response' as 'response',
+      body: object
+    };
+    return this.http.delete<any>(`${this.baseUrl}/${type}`,httpOptions)
+  }
+
 }

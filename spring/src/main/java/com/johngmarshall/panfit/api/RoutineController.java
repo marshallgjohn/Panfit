@@ -4,6 +4,7 @@ package com.johngmarshall.panfit.api;
 import com.johngmarshall.panfit.model.Routine;
 import com.johngmarshall.panfit.service.RoutineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,16 @@ public class RoutineController {
   @PostMapping
   public Routine addRoutine( @NonNull @RequestBody Routine routine) {
     return routineService.addRoutine(routine);
+  }
+
+  @PutMapping()
+  public int updateRoutineDotw(@Param("day")int day) {
+    return routineService.updateRoutineDotw(day);
+  }
+
+  @DeleteMapping
+  public void deleteRoutines(@RequestBody @NonNull List<Routine> routines) {
+    routineService.deleteRoutines(routines);
   }
 }
 

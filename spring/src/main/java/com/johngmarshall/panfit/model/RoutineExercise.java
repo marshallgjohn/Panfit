@@ -1,5 +1,8 @@
 package com.johngmarshall.panfit.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,9 +24,10 @@ public class RoutineExercise {
   private int routine_sets;
   private int routine_goal_reps_min;
   private int routine_goal_reps_max;
+  private int routineWeight;
 
 
-  public RoutineExercise(int id, Exercise exercise, Routine routine, int routine_rest, int routine_sets, int routine_goal_reps_min, int routine_goal_reps_max) {
+  public RoutineExercise(int id, Exercise exercise, Routine routine, int routine_rest, int routine_sets, int routine_goal_reps_min, int routine_goal_reps_max, int routineWeight) {
     this.id = id;
     this.exercise = exercise;
     this.routine = routine;
@@ -31,6 +35,7 @@ public class RoutineExercise {
     this.routine_sets = routine_sets;
     this.routine_goal_reps_min = routine_goal_reps_min;
     this.routine_goal_reps_max = routine_goal_reps_max;
+    this.routineWeight = routineWeight;
   }
 
   public int getId() {
@@ -59,5 +64,9 @@ public class RoutineExercise {
 
   public int getRoutine_goal_reps_max() {
     return routine_goal_reps_max;
+  }
+
+  public int getRoutineWeight() {
+    return routineWeight;
   }
 }
