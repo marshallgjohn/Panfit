@@ -22,7 +22,7 @@ public class RoutineEntriesController {
 
   @GetMapping
   List<RoutineEntries> getAllEntries() {
-    return routineEntriesService.getAllEntries((((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
+    return routineEntriesService.getAllEntries(SecurityContextHolder.getContext().getAuthentication().getName());
   }
 
   @PostMapping

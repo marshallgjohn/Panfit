@@ -24,12 +24,12 @@ public class RoutineController {
 
   @GetMapping()
   public List<Routine> getAllRoutines() {
-    return routineService.getAllRoutines(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+    return routineService.getAllRoutines(SecurityContextHolder.getContext().getAuthentication().getName());
   }
 
   @GetMapping(path="{id}")
   public Optional<Routine> getRoutineById(@PathVariable("id") int id) {
-    return routineService.getRoutineById(id,((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+    return routineService.getRoutineById(id,(SecurityContextHolder.getContext().getAuthentication().getName()));
   }
 
   @PostMapping

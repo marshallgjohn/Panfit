@@ -26,12 +26,12 @@ public class UserController {
 
   @GetMapping
   public Optional<User> getUsername() {
-    return userService.findByUsername(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+    return userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
   }
 
   @GetMapping("/id")
   public int getUserId() {
-    return userService.findUserId(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+    return userService.findUserId(SecurityContextHolder.getContext().getAuthentication().getName());
   }
 
 }

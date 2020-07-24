@@ -14,6 +14,10 @@ import {CurrentWorkout} from '../model/currentWorkout';
   templateUrl: './preworkoutpage.component.html',
   styleUrls: ['./preworkoutpage.component.sass']
 })
+//TODO: Get graph of progression working
+//TODO: make page reactive to change current workout routine
+//FIXME: last workout/workout history not filling in
+
 export class PreworkoutpageComponent implements OnInit {
 
   user: User;
@@ -26,6 +30,7 @@ export class PreworkoutpageComponent implements OnInit {
   test: String;
   currentWorkout: CurrentWorkout;
   currentRoutine: Routine;
+  todayDate: String;
   private _modal: boolean = false;
 
 
@@ -49,6 +54,7 @@ export class PreworkoutpageComponent implements OnInit {
       this.apiService.getAll("entries").subscribe((data: RoutineEntry[]) => {
           this.entries = data;
           this.lastEntry = data[data.length-1];
+          console.log(this.lastEntry)
         });
 
       this.apiService.getAll("users").subscribe((data: User) => {
@@ -57,8 +63,11 @@ export class PreworkoutpageComponent implements OnInit {
 
      this.apiService.getAll("workouts").subscribe((data: Workout[]) => {
         this.workoutList = data;
+        console.log(this.workoutList)
      });
       this.dotw = this.initDotw();
+      this.todayDate = this.getFormattedDate()
+      console.log(this.todayDate)
   }
 
   initRoutines(user): String[] {
@@ -119,6 +128,9 @@ export class PreworkoutpageComponent implements OnInit {
 
   updateCurrentWorkout() {
     this.apiService.put("current",Number((<HTMLSelectElement>document.getElementById('current-select')).value)).subscribe()
+
+    this.ngOnInit()
+   
   }
 
   changeRoutine(rout: Routine) {
@@ -132,6 +144,20 @@ export class PreworkoutpageComponent implements OnInit {
 
     return null;
   }
+
+  getFormattedDate() {
+
+    var todayTime = new Date();
+
+    var month = (todayTime.getMonth() + 1);
+
+    var day = (todayTime .getDate());
+
+    var year = (todayTime .getFullYear());
+
+    return  (month < 10) ? "0"+month + "/" + day + "/" + year : month + "/" + day + "/" + year;
+
+}
 
   showModal(): void {
     this._modal = !this._modal;

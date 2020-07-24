@@ -37,13 +37,13 @@ public class RoutineEntries {
   @Transient
   private String workoutLength;
 
-/*  @Transient
-  private int numOfSets;*/
+  @Transient
+  private int numOfSets;
 
-/*
+
   @Transient
   private int totalWeightLifted;
-*/
+
 
 
   protected RoutineEntries(){}
@@ -54,7 +54,7 @@ public class RoutineEntries {
     this.routine = routine;
     this.entryDate = entryDate;
     this.entryLength = entryLength;
-/*    this.numOfSets = getNumOfSets();*/
+    this.numOfSets = getNumOfSets();
     this.workoutLength = getWorkoutLength();
   }
 
@@ -77,14 +77,14 @@ public class RoutineEntries {
     return entryLength;
   }
 
-/*  public int getNumOfSets() {
+ public int getNumOfSets() {
     return set.stream().mapToInt(Sets::getSetReps).sum();
-  }*/
-/*
+  }
+
   public int getTotalWeightLifted() {
     set.forEach(sets -> totalWeightLifted += sets.getSetReps()*sets.getSetWeight());
     return  totalWeightLifted;
-  }*/
+  }
 
   public int getId() {
     return id;

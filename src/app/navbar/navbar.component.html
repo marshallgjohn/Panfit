@@ -1,13 +1,13 @@
 <nav *ngIf="!accountService.isLoggedIn()">
 <ul>
-    <li id="panfit">PANFIT</li>
+    <li id="panfit"><a routerLink="">PANFIT</a></li>
     <li class="item"><a routerLink="" routerLinkActive="active">HOME</a></li>
     <li class="item"><a>INFO</a></li>
     <li class="item"><a routerLink="/login" routerLinkActive="active">SIGN IN</a></li>
 </ul>
 </nav>
 <nav *ngIf="accountService.isLoggedIn()" class="logged-in">
-       <span id="panfit">PANFIT</span>
+       <span id="panfit"><a routerLink="">PANFIT</a></span>
        <button  class="button" id= "logout" (click)="this.accountService.logout()">LOGOUT</button>
 </nav>
 

@@ -12,6 +12,7 @@
     text-align: center
     padding-top: 15px
     position: relative
+    
 
 .workout-info
     background-color: #299ABD
@@ -29,11 +30,16 @@ hr
 
 
 #exercise-list
-    width: 100%
+    width: 95%
     height: 65vh
     display: flex
     flex-direction: column
     overflow-y: auto
+    padding-top: 15px
+    margin: 10px 0 10px 0
+    left: 2.5%
+    position: relative
+
 
 .exercise-list-item
     width: 90%
@@ -91,6 +97,7 @@ hr
     background-color: rgb(0,0,0,0.55)
     height: 100%
     width: 100%
+    z-index: 999
 
 
 #add-container
@@ -98,7 +105,7 @@ hr
     width: 75%
     border-radius: 30px
     background-color: #DB504A
-    position: relative
+    
 
 #close-modal
     background-color: rgb(0,0 ,0,0 )
@@ -252,12 +259,39 @@ input[type=number]
   -moz-appearance: textfield
 
 
-#workout-done
+#workout-add
     position: absolute
-    right: 1vw
-    background-color: #62db4a
-    padding: 10px
+    bottom: 1em
+    margin-left: auto
+    margin-right: auto
     border-radius: 5px
+    padding: 0.75em
+    background-color: #4adb62
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+    font-family: 'Rubik', sans-serif
+    font-weight: 600
+
+    color: white
+    font-size: 20pt
+    border: none
+
+    :active
+        background-color:#41c057
+
+
+#workout-return 
+    position: absolute
+    left: 1em
+    border-radius: 5px
+    padding: 0.75em
+    background-color: #81e0fd
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+    font-family: 'Rubik', sans-serif
+    font-weight: 600
+    color: white
+    font-size: 14pt
+    border: none
+
 
 .delete-button
     position: absolute
@@ -276,7 +310,7 @@ input[type=number]
     visibility: visible
 
 
-#routine-select
+select
     background-color: #1d7b97
     border: none
     font-size: 35pt
@@ -291,7 +325,7 @@ input[type=number]
     option
         text-align: center
 
-#routine-select:hover
+select:hover
     border: 1px solid #ffffff
 
 #routine:after 
@@ -304,4 +338,12 @@ input[type=number]
   border: 6px solid transparent
   border-color: #fff transparent transparent transparent
 
+#add-exercise-button
+    margin-left: auto
+    margin-right: auto
+
+#workout-day-select-container
+    display: flex
+    justify-content: space-around
+    vertical-align: center
     

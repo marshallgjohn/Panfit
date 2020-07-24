@@ -26,7 +26,7 @@ public class RoutineExerciseController {
 
   @GetMapping
   public List<RoutineExercise> getAllRoutineExercises() {
-    return routineExerciseService.getAllRoutineExercises((((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
+    return routineExerciseService.getAllRoutineExercises(SecurityContextHolder.getContext().getAuthentication().getName());
   }
 
   @GetMapping(path="{id}")

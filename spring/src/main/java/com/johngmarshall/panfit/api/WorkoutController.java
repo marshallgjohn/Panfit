@@ -25,12 +25,12 @@ public class WorkoutController {
 
   @GetMapping(path="current")
   public Optional<Workout> getCurrentWorkout() {
-    return workoutService.getCurrentWorkout(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+    return workoutService.getCurrentWorkout(SecurityContextHolder.getContext().getAuthentication().getName());
   }
 
   @GetMapping
   public List<Workout> findAllByUserUserCredentialsUsername() {
-    return workoutService.findAll(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+    return workoutService.findAll(SecurityContextHolder.getContext().getAuthentication().getName());
   }
 
   @PostMapping
