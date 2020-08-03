@@ -20,10 +20,7 @@ import { CurrentWorkout } from '../model/currentWorkout';
 
 //TODO: add delete button for workouts/routines
 //TODO: add exercise to list when new created
-//TODO: add an 'add' button separate from 'done' button
 //TODO: when done/add exercise need to refresh or add to list
-//TODO: add exercise button not staying w/in container
-//FIXME: appears that deleting still has issues and remkoves more than one 
 export class CreateworkoutpageComponent implements OnInit {
 
   private _modal: boolean = false;
@@ -38,6 +35,8 @@ export class CreateworkoutpageComponent implements OnInit {
   private _routineSelect: boolean = true;
 
   private _workoutTitle: boolean = false;
+
+  private _addExerciseButton: boolean = false;
 
 
   routineCurrentExercises: RoutineExercise[] = []
@@ -98,13 +97,15 @@ export class CreateworkoutpageComponent implements OnInit {
       this.routineModalList = data;
     })
 
-    this.apiService.getAll("user").subscribe(data => {
+    this.apiService.getAll("users").subscribe(data => {
       this.currentWorkout = data.workout
     })
 
 
     this.workoutForm = new FormGroup({
-      routine: new FormControl(),
+      routineControl: new FormControl(),
+      workoutNameControl: new FormControl(),
+      dayControl: new FormControl()
     });
 
     for(let i = 0; i < 7; i++) {
@@ -113,10 +114,12 @@ export class CreateworkoutpageComponent implements OnInit {
 
   }
 
+
   onClick(name: Exercise): void {
       console.log(name);
       this.routineCurrentExercises.push(
         new RoutineExercise(
+          null,
           null,
           null,
           null,
@@ -131,7 +134,12 @@ export class CreateworkoutpageComponent implements OnInit {
   }
 
   onOptionSelect(name): void {
-  
+    this.routineCurrentExercises.forEach(data => console.log(data))
+    this.routineCurrentExercises = []
+
+    
+    this.workoutNameControl.setValue("hidden")
+    this.dayControl.setValue("hidden")
 
     this.selectedWorkout = this.routineControl.value;
 
@@ -141,6 +149,7 @@ export class CreateworkoutpageComponent implements OnInit {
     this.tempExercises.forEach(data => this.exerciseList.push(data))
     this.tempExercises = []
     this.workoutTitle = true;
+
     if(name == "New") {
       this.routineInput = true;
       this.workoutInput = true;
@@ -148,6 +157,7 @@ export class CreateworkoutpageComponent implements OnInit {
       this.routineCurrentExercises = []
       this.routineSelect = false
       this.dayInput = true
+      this.addExerciseButton = true
       
       
     } else {
@@ -161,11 +171,12 @@ export class CreateworkoutpageComponent implements OnInit {
 
 
 onWorkoutSelect() {
-
+  this.workoutForm.reset()
   this.tempExercises.forEach(data => this.exerciseList.push(data))
   this.tempExercises = []
   this.routineDeletedList = []
   this.workoutTitle = true
+  this.addExerciseButton = true
 
   console.log(this.workoutNameControl.value)
   if(this.workoutNameControl.value == "New") {
@@ -173,6 +184,7 @@ onWorkoutSelect() {
     this._workoutInput = true;
     this.routineCurrentExercises = [] 
     this.newWorkoutInput = false;
+    this.routineCurrentExercises = []
 
   } else {
     this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
@@ -239,7 +251,8 @@ onWorkoutSelect() {
 
 
   postAll(): void {
-    if((this.routineControl.value == "New")) {
+    console.log(this.routineControl.value)
+    if(this.routineControl.value == "New") {
     const l = this.apiService.getAll("users").subscribe(data => {
       this.apiService.post(
         "/workouts",
@@ -251,7 +264,7 @@ onWorkoutSelect() {
         null))
         .subscribe(f => 
           {
-            console.log(f)
+            //console.log(f)
             if(this.currentWorkout == null) {
               this.apiService.post("/current",new CurrentWorkout(null,data,f.body)).subscribe(current => {
                 this.currentWorkout = current;
@@ -269,16 +282,18 @@ onWorkoutSelect() {
               ).subscribe(rout => {
                 let postExercises: RoutineExercise[] = [];
 
-                this.exercises.forEach(data => {
+                this.routineCurrentExercises.forEach(data => {
                   //onsole.log(rout);
+                  console.log(data)
                   let x = new RoutineExercise(
                     null,
-                    Number((document.getElementById(data.id + "-weights") as HTMLInputElement).value),
-                    Number((document.getElementById(data.id + "-max-reps") as HTMLInputElement).value),
-                    Number((document.getElementById(data.id + "-min-reps") as HTMLInputElement).value),
-                    Number((document.getElementById(data.id + "-minutes") as HTMLInputElement).value) * Number((document.getElementById(data.id + "-minutes") as HTMLInputElement).value),
-                    Number((document.getElementById(data.id + "-sets") as HTMLInputElement).value),
-                    data,
+                    Number((document.getElementById(data.exercise.id + "-weight") as HTMLInputElement).value),
+                    Number((document.getElementById(data.exercise.id + "-max-reps") as HTMLInputElement).value),
+                    Number((document.getElementById(data.exercise.id + "-min-reps") as HTMLInputElement).value),
+                    Number((document.getElementById(data.exercise.id + "-minutes") as HTMLInputElement).value) * Number((document.getElementById(data.exercise.id + "-seconds") as HTMLInputElement).value),
+                    Number((document.getElementById(data.exercise.id + "-sets") as HTMLInputElement).value),
+                    this.routineCurrentExercises.indexOf(this.routineCurrentExercises.filter(f => f.exercise == data.exercise)[0]),
+                    data.exercise,
                     rout.body,
                     );
                     postExercises.push(x);
@@ -306,17 +321,15 @@ onWorkoutSelect() {
           this.routineCurrentExercises.forEach(data => {
             let x = new RoutineExercise(
               /*id*/data.id,
-              /*weight*/(data.id != null) ? Number((document.getElementById(data.id + "-weight") as HTMLInputElement).value) : Number((document.getElementById("-weight") as HTMLInputElement).value) ,
-              /*Max reps*/(data.id != null) ? Number((document.getElementById(data.id + "-max-reps") as HTMLInputElement).value): Number((document.getElementById("-max-reps") as HTMLInputElement).value),
-              /*Min Reps*/(data.id != null) ? Number((document.getElementById(data.id + "-min-reps") as HTMLInputElement).value) : Number((document.getElementById("-min-reps") as HTMLInputElement).value),
+              /*weight*/(data.id != null) ? Number((document.getElementById(data.id + "-weight") as HTMLInputElement).value) : Number((document.getElementById(data.exercise.id+"-weight") as HTMLInputElement).value) ,
+              /*Max reps*/(data.id != null) ? Number((document.getElementById(data.id + "-max-reps") as HTMLInputElement).value): Number((document.getElementById(data.exercise.id+"-max-reps") as HTMLInputElement).value),
+              /*Min Reps*/(data.id != null) ? Number((document.getElementById(data.id + "-min-reps") as HTMLInputElement).value) : Number((document.getElementById(data.exercise.id+"-min-reps") as HTMLInputElement).value),
               /*Rest time*/(data.id != null) ? (Number((document.getElementById(data.id + "-minutes") as HTMLInputElement).value) * 60) + Number((document.getElementById(data.id + "-seconds") as HTMLInputElement).value) :
-              (Number((document.getElementById("-minutes") as HTMLInputElement).value) * 60) + Number((document.getElementById("-seconds") as HTMLInputElement).value),
-              /*sets*/(data.id != null) ? Number((document.getElementById(data.id + "-sets") as HTMLInputElement).value): Number((document.getElementById("-sets") as HTMLInputElement).value),
+              (Number((document.getElementById(data.exercise.id+"-minutes") as HTMLInputElement).value) * 60) + Number((document.getElementById(data.exercise.id+"-seconds") as HTMLInputElement).value),
+              /*sets*/(data.id != null) ? Number((document.getElementById(data.id + "-sets") as HTMLInputElement).value): Number((document.getElementById(data.exercise.id+"-sets") as HTMLInputElement).value),
+              this.routineCurrentExercises.indexOf(this.routineCurrentExercises.filter(f => f.exercise == data.exercise)[0]),
               /*Exercise*/data.exercise,
               /*routine*/rout.body,
-
-              
-              
               );
               postExercises.push(x);
           });
@@ -325,6 +338,7 @@ onWorkoutSelect() {
         });
     }
     this.apiService.delete("routineexercises",this.routineDeletedList).subscribe()
+    //this.ngOnInit();
   }
 
   postExercise(): void {
@@ -343,9 +357,8 @@ onWorkoutSelect() {
       ),
       (document.getElementById("exercise-name-input") as HTMLInputElement).value
     ))).subscribe();
-
-    //this.ngOnInit();
   }
+
 
 
   onBlur(input,id) {
@@ -474,7 +487,25 @@ onWorkoutSelect() {
      */
 	public set workoutTitle(value: boolean ) {
 		this._workoutTitle = value;
+  }
+  
+
+    /**
+     * Getter addExerciseButton
+     * @return {boolean }
+     */
+	public get addExerciseButton(): boolean  {
+		return this._addExerciseButton;
 	}
+
+    /**
+     * Setter addExerciseButton
+     * @param {boolean } value
+     */
+	public set addExerciseButton(value: boolean ) {
+		this._addExerciseButton = value;
+	}
+
 
 
 

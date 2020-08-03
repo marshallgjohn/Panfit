@@ -55,9 +55,10 @@
     <div id="workout-day-select-container">
         <div>
         <h1 *ngIf="workoutTitle">Workout:</h1>
-        <select [formControl]="workoutNameControl" *ngIf="selectedWorkout!==undefined && newWorkoutInput" #workoutSelect (change)="onWorkoutSelect()">
-            <option *ngFor="let routine of selectedWorkout.routine" [ngValue]="routine" value="{{routine.id}}" >
-                {{routine.routineName}}
+        <select id="test" [formControl]="workoutNameControl" *ngIf="selectedWorkout!==undefined && newWorkoutInput" #workoutSelect (change)="onWorkoutSelect()">
+            <option hidden value="hidden"></option>
+            <option  *ngFor="let routine of selectedWorkout.routine" [ngValue]="routine" value="{{routine.id}}" >
+                {{routine.routineName}} 
             </option>
             <option value="New">New Workout</option>
         </select>
@@ -68,34 +69,36 @@
         <div>
         <h1 *ngIf="dayInput">Day:</h1>
         <select [formControl]="dayControl" *ngIf="dayInput" id="day-select" >
+            <option hidden value="hidden"></option>
             <option *ngFor="let day of routineDotw" value="{{day.num}}">{{day.name}}</option>
         </select>
         </div>
 
     </div>
-    <div id="exercise-list">
-        <div *ngFor="let exercise of routineCurrentExercises" class="exercise-list-item" id="{{exercise}}">
+    <div dragula="exercises" [(dragulaModel)]="routineCurrentExercises" id="exercise-list">
+        <div  *ngFor="let exercise of routineCurrentExercises" class="exercise-list-item" id="{{exercise}}">
             <div id="exercise-item-name">{{exercise.exercise.exerciseName}}</div>
             <div>
-                <input type="number" required id="{{exercise.id}}-weight"  class="list-lbs-input" min=1 max=999 placeholder="300" />lbs
+                <input type="number" value="{{exercise.routineWeight}}" required id="{{exercise.id || exercise.exercise.id}}-weight"  class="list-lbs-input" min=1 max=999 placeholder="300" />lbs
             </div>
             <div>
-                <input type="number"  value="{{exercise.routine_sets}}" required id="{{exercise.id}}-sets" class="list-reps-input" min=1 max=99 placeholder="4"/>
+                <input type="number"  value="{{exercise.routine_sets}}" required id="{{exercise.id|| exercise.exercise.id}}-sets" class="list-reps-input" min=1 max=99 placeholder="4"/>
                 x
-                <input type="number" value="{{exercise.routine_goal_reps_min}}" required id="{{exercise.id}}-min-reps"class="list-reps-min-input" min=1 max=99 placeholder="8"/>
+                <input type="number" value="{{exercise.routine_goal_reps_min}}" required id="{{exercise.id|| exercise.exercise.id}}-min-reps"class="list-reps-min-input" min=1 max=99 placeholder="8"/>
                 -
-                <input type="number" value="{{exercise.routine_goal_reps_max}}" required id="{{exercise.id}}-max-reps" class="list-reps-max-input" min=1 max=99 placeholder="12"/>
+                <input type="number" value="{{exercise.routine_goal_reps_max}}" required id="{{exercise.id|| exercise.exercise.id}}-max-reps" class="list-reps-max-input" min=1 max=99 placeholder="12"/>
             </div>
             <div>
-                <input type="number" required id="{{exercise.id}}-minutes" class="list-reps-min-input" min=1 max=99 placeholder="2"/>
+                <input type="number" required id="{{exercise.id|| exercise.exercise.id}}-minutes" class="list-reps-min-input" min=1 max=99 placeholder="2"/>
                 M
-                <input type="number" required id="{{exercise.id}}-seconds" class="list-reps-min-input" min=1 max=99 placeholder="30"/>
+                <input type="number" required id="{{exercise.id|| exercise.exercise.id}}-seconds" class="list-reps-min-input" min=1 max=99 placeholder="30"/>
                 S
             </div>
             <button class="delete-button" (click)="deleteElement(exercise)">X</button>
         </div>
-        <button  id="add-exercise-button" class="button" (click)="showModal()">ADD EXERCISE</button>
+        
     </div>
+    <button  *ngIf="addExerciseButton" id="add-exercise-button" class="button" (click)="showModal()">ADD EXERCISE</button>
     </form>
 
 </div>

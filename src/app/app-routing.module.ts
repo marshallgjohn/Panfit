@@ -14,7 +14,7 @@ import {AuthGuard} from './_helpers/auth.guard';
 
 const routes: Routes = [
   {path:'login', component: LoginComponent},
-  {path:'register', component: RegisterComponent, canActivate: [!AuthGuard]},
+  {path:'register', component: RegisterComponent},
   {path: 'pre-workout',component: PreworkoutpageComponent, canActivate: [AuthGuard]},
   {path: 'create-workout',component: CreateworkoutpageComponent, canActivate: [AuthGuard]},
   {path: 'create-workout/:id',component: CreateworkoutpageComponent, canActivate: [AuthGuard]},

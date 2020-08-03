@@ -32,6 +32,7 @@ export class WorkoutComponent implements OnInit {
       this.routine = rout;
       this.apiService.getAll("routineexercises/" + rout.id).subscribe((data:RoutineExercise[]) =>{
         this.exercises = data
+        console.log(data)
       })});
 
       this.apiService.getAll("entries").subscribe((data: RoutineEntry[]) => {

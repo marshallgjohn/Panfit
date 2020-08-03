@@ -25,9 +25,10 @@ public class RoutineExercise {
   private int routine_goal_reps_min;
   private int routine_goal_reps_max;
   private int routineWeight;
+  private int routineOrder;
 
 
-  public RoutineExercise(int id, Exercise exercise, Routine routine, int routine_rest, int routine_sets, int routine_goal_reps_min, int routine_goal_reps_max, int routineWeight) {
+  public RoutineExercise(int id, Exercise exercise, Routine routine, int routine_rest, int routine_sets, int routine_goal_reps_min, int routine_goal_reps_max, int routineWeight, int routineOrder) {
     this.id = id;
     this.exercise = exercise;
     this.routine = routine;
@@ -36,6 +37,15 @@ public class RoutineExercise {
     this.routine_goal_reps_min = routine_goal_reps_min;
     this.routine_goal_reps_max = routine_goal_reps_max;
     this.routineWeight = routineWeight;
+    this.routineOrder = routineOrder;
+  }
+
+  public int getRoutineOrder() {
+    return routineOrder;
+  }
+
+  public void setRoutineOrder(int routineOrder) {
+    this.routineOrder = routineOrder;
   }
 
   public int getId() {

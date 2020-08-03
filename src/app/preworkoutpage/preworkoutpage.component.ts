@@ -20,10 +20,10 @@ import {CurrentWorkout} from '../model/currentWorkout';
 
 export class PreworkoutpageComponent implements OnInit {
 
-  user: User;
+  private _user: User;
   workout: Workout;
   dotw: String[];
-  routines: String[];
+  private _routines: String[];
   workoutList: Workout[];
   entries: RoutineEntry[];
   lastEntry: RoutineEntry;
@@ -46,6 +46,7 @@ export class PreworkoutpageComponent implements OnInit {
           this.router.navigateByUrl('/create-workout');
         }
          this.routines = this.initRoutines(data);
+         console.log(["DAY OFF", "DAY OFF", "DAY OFF"]);
 
          
          
@@ -54,7 +55,7 @@ export class PreworkoutpageComponent implements OnInit {
       this.apiService.getAll("entries").subscribe((data: RoutineEntry[]) => {
           this.entries = data;
           this.lastEntry = data[data.length-1];
-          console.log(this.lastEntry)
+          console.log(this.lastEntry.entryDate.toLocaleString())
         });
 
       this.apiService.getAll("users").subscribe((data: User) => {
@@ -63,17 +64,19 @@ export class PreworkoutpageComponent implements OnInit {
 
      this.apiService.getAll("workouts").subscribe((data: Workout[]) => {
         this.workoutList = data;
-        console.log(this.workoutList)
+        //console.log(this.workoutList)
      });
       this.dotw = this.initDotw();
       this.todayDate = this.getFormattedDate()
       console.log(this.todayDate)
+      console.log(this.lastEntry.entryDate.toLocaleString())
   }
 
-  initRoutines(user): String[] {
+  initRoutines(user) {
     let num = new Date().getDay();
     let r = ["DAY OFF","DAY OFF","DAY OFF"];
     user.forEach(element => {
+      console.log(element.routineDay)
         switch(element.routineDay) {
           case num-1:
             r.splice(0,1,element.routineName.toUpperCase());
@@ -82,16 +85,15 @@ export class PreworkoutpageComponent implements OnInit {
           case num:
             r.splice(1,1,element.routineName.toUpperCase());
             this.changeRoutine(element);
-            console.log(element);
+            //console.log(element);
             break;
 
           case num+1:
             r.splice(2,1,element.routineName.toUpperCase());
             break;
       }
-      
     });
-
+      console.log(r)
       return r;
   }
 
@@ -153,9 +155,11 @@ export class PreworkoutpageComponent implements OnInit {
 
     var day = (todayTime .getDate());
 
+    let dday = (day < 10) ? "0"+ day : ""+day
+
     var year = (todayTime .getFullYear());
 
-    return  (month < 10) ? "0"+month + "/" + day + "/" + year : month + "/" + day + "/" + year;
+    return  (month < 10) ? "0"+month + "/" + dday + "/" + year : month + "/" + dday + "/" + year;
 
 }
 
@@ -169,4 +173,41 @@ export class PreworkoutpageComponent implements OnInit {
   set modal(value: boolean) {
     this._modal = value;
   }
+
+
+    /**
+     * Getter user
+     * @return {User}
+     */
+	public get user(): User {
+		return this._user;
+	}
+
+    /**
+     * Setter user
+     * @param {User} value
+     */
+	public set user(value: User) {
+		this._user = value;
+  }
+  
+
+    /**
+     * Getter routines
+     * @return {String[]}
+     */
+	public get routines(): String[] {
+		return this._routines;
+	}
+
+    /**
+     * Setter routines
+     * @param {String[]} value
+     */
+	public set routines(value: String[]) {
+		this._routines = value;
+	}
+
+  
+
 }

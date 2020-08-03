@@ -12,34 +12,30 @@
 </div>
 
 <div id="container">
-    <span id="title" *ngIf="routines[1] != 'DAY OFF'"> WELCOME BACK {{user.userCredentials.username}}, LETS GET TO WORK</span>
-    <span id="title" *ngIf="routines[1] == 'DAY OFF'"> ENJOY THE DAY OFF {{user.userCredentials.username}}</span>
-    <br/>
-    <span id="title">CURRENT ROUTINE: {{currentWorkout.workout.workoutName}}</span><br>
-    <span id="title">CURRENT WORKOUT: {{routines[1]}}</span>
-    
+    <div id="title-section">
+    <div><span class="space" id="title" > Welcome back {{user.userCredentials.username}}!</span></div>
+    <span id="title">Current Routine: {{currentWorkout.workout.workoutName}}</span><br>
+    <span id="title">Current Workout: {{routines[1]}}</span>
+    </div>
 
     <div id="workout-days">
         <div class="workout-off">
-            <p><span class="workout-title"> {{dotw[6]}} {{dotw[3]}} {{dotw[7]}}</span></p>
+            <p><span class="workout-title"> {{dotw[6]}} {{dotw[3]}}, {{dotw[7]}}</span></p>
             <p>{{dotw[0]}}</p>
             <p>WORKOUT: {{routines[0]}}</p>
-            <p *ngIf="routines[0] != 'DAY OFF'">AVG TIME: 1H 2M</p>
-            
         </div>
         <div id="workout-on">
-            <p><span class="workout-title">{{dotw[6]}} {{dotw[4]}} {{dotw[7]}}</span></p>
+            <p><span class="workout-title">{{dotw[6]}} {{dotw[4]}}, {{dotw[7]}}</span></p>
             <p>{{dotw[1]}}</p>
             <p>WORKOUT: {{routines[1]}}</p>
-            <p *ngIf="routines[1] != 'DAY OFF'">AVG TIME: 1H 2M</p>
-            <button  *ngIf="routines[1] != 'DAY OFF' && this.lastEntry.entryDate.toLocaleString() !== todayDate" class="button" type="submit" routerLink="/workout">START WORKOUT</button> 
-            <button  *ngIf="routines[1] != 'DAY OFF' && this.lastEntry.entryDate.toLocaleString() === todayDate" class="button" type="submit" disabled>COMPLETED</button>
+            <p>AVG TIME: 1H 2M</p>
+            <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry===undefined || routines[1]!=='DAY OFF' && this.lastEntry.entryDate.toLocaleString()!==todayDate" class="button" type="submit" routerLink="/workout">START WORKOUT</button> 
+            <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry.entryDate.toLocaleString()===todayDate" class="button" type="submit" disabled>COMPLETED</button>
         </div>
         <div class="workout-off">
-            <p><span class="workout-title">{{dotw[6]}} {{dotw[5]}} {{dotw[7]}}</span></p>
+            <p><span class="workout-title">{{dotw[6]}} {{dotw[5]}}, {{dotw[7]}}</span></p>
             <p>{{dotw[2]}}</p>
             <p>WORKOUT: {{routines[2]}}</p>
-            <p *ngIf="routines[2] != 'DAY OFF'">AVG TIME: 1H 2M</p>
         </div>
     </div>
 
@@ -135,29 +131,7 @@
                             {{e.workoutLength}}
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            7/3/20
-                        </td>
-                        <td>
-                            PULL
-                        </td>
-                        <td>
-                            +100 lbs
-                        </td>
-                        <td>
-                            5500 lbs
-                        </td>
-                        <td>
-                            35
-                        </td>
-                        <td>
-                            4
-                        </td>
-                        <td>
-                            1H 3M 22S
-                        </td>
-                    </tr>
+                
                 </table>
             </div>
         </div>

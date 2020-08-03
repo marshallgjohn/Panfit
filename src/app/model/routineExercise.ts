@@ -10,6 +10,7 @@ export class RoutineExercise {
         public routine_goal_reps_min: number,
         public routine_rest: number,
         public routine_sets: number,
+        public routineOrder: number,
         public exercise: Exercise,
         public routine: Routine,
 

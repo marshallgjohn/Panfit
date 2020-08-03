@@ -34,6 +34,7 @@ public class RoutineEntries {
   @Column(name ="entryLength")
   private int entryLength;
 
+
   @Transient
   private String workoutLength;
 

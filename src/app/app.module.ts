@@ -19,6 +19,8 @@ import { HomeComponent } from './component/home/home.component';
 import { CommonModule } from '@angular/common';
 import { PreworkoutComponent } from './component/preworkout/preworkout.component';
 
+import {DragulaModule} from 'ng2-dragula';
+
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { PreworkoutComponent } from './component/preworkout/preworkout.component
     HomepageComponent,
     HomeComponent,
     PreworkoutComponent,
+    //DragulaModule
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { PreworkoutComponent } from './component/preworkout/preworkout.component
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CommonModule
+    CommonModule,
+    DragulaModule.forRoot()
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},

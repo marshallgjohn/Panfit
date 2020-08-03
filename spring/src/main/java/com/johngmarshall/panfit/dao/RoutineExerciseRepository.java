@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RoutineExerciseRepository extends CrudRepository<RoutineExercise, Long> {
 
-  List<RoutineExercise> findRoutineExercisesByRoutineWorkoutUserUserCredentialsUsername(String username);
+  List<RoutineExercise> findRoutineExercisesByRoutineWorkoutUserUserCredentialsUsernameOrderByRoutineOrder(String username);
 
   List<RoutineExercise> findRoutineExercisesByRoutineId(int id);
 }

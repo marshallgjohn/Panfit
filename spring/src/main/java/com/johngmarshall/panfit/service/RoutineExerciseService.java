@@ -15,7 +15,7 @@ public class RoutineExerciseService {
   }
 
   public List<RoutineExercise> getAllRoutineExercises(String username) {
-    return routineExerciseRepository.findRoutineExercisesByRoutineWorkoutUserUserCredentialsUsername(username);
+    return routineExerciseRepository.findRoutineExercisesByRoutineWorkoutUserUserCredentialsUsernameOrderByRoutineOrder(username);
   }
   public List<RoutineExercise> getAllRoutineExercisesByRoutineId(int id) {
     return routineExerciseRepository.findRoutineExercisesByRoutineId(id);
