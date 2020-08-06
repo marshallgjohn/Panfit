@@ -6,6 +6,7 @@ import {timer} from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
 import {RoutineEntry} from '../../model/routineEntry';
 import {Sets} from '../../model/sets';
+import {Router} from '@angular/router'
 
 @Component({
   selector: 'app-workout',
@@ -21,23 +22,45 @@ export class WorkoutComponent implements OnInit {
   elapsedSeconds: number;
   exercises: RoutineExercise[];
   postSets: Sets[];
-  entries: RoutineEntry;
+  entries: RoutineEntry[];
+  private _test: any[] = [];
+  private _setCount: number =-1;
+  private _prevReps: number[] = []
 
-  constructor(private apiService: ApiService, private data: DataService) { }
+  constructor(private apiService: ApiService, private data: DataService, private router: Router) { }
 
   ngOnInit(): void {
 
 
+
     this.data.currentRoutine.subscribe(rout => {
       this.routine = rout;
+      if(this.routine.routineName === "none") {
+        this.router.navigateByUrl("");
+      }
       this.apiService.getAll("routineexercises/" + rout.id).subscribe((data:RoutineExercise[]) =>{
         this.exercises = data
-        console.log(data)
+        //console.log(data)
       })});
 
       this.apiService.getAll("entries").subscribe((data: RoutineEntry[]) => {
-        this.entries = data[data.length-2];
+        this.entries = data;
+        let s = data.filter(f => f.routine.routineName === this.routine.routineName)
+        console.log("DINGDINDGIGD")
+
+        let d = s[s.length-1]
+        console.log(d.set)
+        d.set.forEach(x=> {
+          console.log(x.setPrevWeight)
+          this.test.push(x.setPrevWeight)
+          this.prevReps.push(x.setReps)
+          //console.log("WHY: "+this.test.length)
+        })
+        //console.log("WHY: "+this.test.length)
+        //console.log("?")
       });
+      //console.log(this.test)
+    
 
 
 
@@ -47,17 +70,17 @@ export class WorkoutComponent implements OnInit {
 
 
   postWorkout(): void {
-
+    let date = new Date()
     this.apiService.post(
       "/entries",
       new RoutineEntry(
         null,
         this.routine,
-        new Date(new Date().toJSON().slice(0,10).replace(/-/g,'/')),
-        this.elapsedSeconds
+        new Date(date.toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')),//new Date(new Date().toJSON().slice(0,10).replace('/-/g','/')),
+        this.elapsedSeconds,
+        null
       )).subscribe(data => {
-        console.log(data);
-        //this.apiService.post("/sets",this.createPostSets(data.bod.routine))
+        //console.log(data);
         this.apiService.post(
           "/sets/all",
           JSON.stringify(this.createPostSets(data.body)
@@ -73,22 +96,22 @@ export class WorkoutComponent implements OnInit {
     this.exercises.forEach(data => {
 
       for(let i = 1; i < data.routine_sets+1;i++) {
-        console.log(data.id);
+        //console.log(data.id);
         let set = new Sets(
           null,
-          new RoutineEntry(1,null,null,null),
+          entry,
           data,
           i,
           Number((document.getElementById(data.id +"-"+ i + "-reps") as HTMLInputElement).value),
           Number((document.getElementById(data.id +"-" + i + "-lbs") as HTMLInputElement).value),
-          0,
+          Number((document.getElementById(data.id +"-" + i + "-lbs") as HTMLInputElement).value),
           );
         sets.push(set);
       }
       
     })
     
-    console.log(sets)
+    //console.log(sets)
     return sets;
   }
 
@@ -107,6 +130,17 @@ export class WorkoutComponent implements OnInit {
 
     
   }
+
+  setPrevWeight(i): number{
+    if(i < this.setCount) {
+      this.setCount = this._setCount+1
+    } else {
+      this.setCount = i;
+    }
+    console.log(this.setCount)
+    return this.test[this.setCount];
+  }
+
 
   elapsedTimer() {
     const source = timer(1,1000);
@@ -131,7 +165,7 @@ export class WorkoutComponent implements OnInit {
       //console.log(hours,hour);
       //let minutes = (x - 3600 * hours) / 60;
       //let seconds = (x - 3600 * hours - 60 * minutes);
-      this.elapsedTime = hours + "H" + minutes + "M" + (seconds) + "S";
+      this.elapsedTime =((hours < 10)? "0"+hours +"H" : hours + "H") + ((minutes < 10)? "0"+minutes+"M" : minutes + "M") + ((seconds < 10)? "0"+seconds+"S" : seconds + "S");
     });
   }
 
@@ -140,5 +174,57 @@ export class WorkoutComponent implements OnInit {
   setArray(n: number): any[] {
     return Array(n);
   }
+
+
+    /**
+     * Getter test
+     * @return {any[]}
+     */
+	public get test(): any[] {
+		return this._test;
+	}
+
+    /**
+     * Setter test
+     * @param {any[]} value
+     */
+	public set test(value: any[]) {
+		this._test = value;
+	}
+
+
+    /**
+     * Getter setCount
+     * @return {number }
+     */
+	public get setCount(): number  {
+		return this._setCount;
+	}
+
+    /**
+     * Setter setCount
+     * @param {number } value
+     */
+	public set setCount(value: number ) {
+		this._setCount = value;
+	}
+  
+
+    /**
+     * Getter prevReps
+     * @return {number[] }
+     */
+	public get prevReps(): number[]  {
+		return this._prevReps;
+	}
+
+    /**
+     * Setter prevReps
+     * @param {number[] } value
+     */
+	public set prevReps(value: number[] ) {
+		this._prevReps = value;
+	}
+
 
 }

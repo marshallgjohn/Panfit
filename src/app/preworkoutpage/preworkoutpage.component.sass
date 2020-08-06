@@ -71,7 +71,21 @@
 hr
     margin: 50px
     color: white
-    
+
+select
+    background-color: #DB504A
+    border: none
+    font-size: 35pt
+    font-weight: 600
+    font-family: 'Rubik', sans-serif
+    color: white
+    text-align: center
+    border-radius: 5px
+    -moz-appearance: none
+    -webkit-appearance: none
+    background-image: linear-gradient(to bottom, #c72a25 0% ,#b32925 100%)
+    option
+        text-align: center
 
 #stats-section
     display: grid
@@ -137,6 +151,7 @@ hr
     grid-column-start: span 2
     height: 35em
 
+
     span
         font-size: 24pt
         
@@ -144,6 +159,7 @@ hr
 #history-inner
     @extend %inner
     color: black
+    overflow-y: scroll
     
     table
         width: 100%
@@ -154,9 +170,16 @@ hr
             background-color: #29CDFF
             padding-top: 10px
             padding-bottom: 10px
+            position: sticky
+            top: 0
         td
             padding-top: 20px
 
+#history-inner::webkit-scrollbar
+        width: 2em
+        background-color: red
+
+    
 
 #stats-section-undef
     font-size: 27pt
@@ -249,4 +272,8 @@ hr
     margin: 1.25em
     padding: 0.5em
 
+.pos
+    color: green
 
+.neg
+    color: red

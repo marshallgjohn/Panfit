@@ -8,7 +8,7 @@ import { AppRoutingModule } from '../app-routing.module';
 import {DataService} from '../services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {CurrentWorkout} from '../model/currentWorkout';
-
+import * as CanvasJS from '../../assets/js/canvasjs.min'
 @Component({
   selector: 'app-preworkoutpage',
   templateUrl: './preworkoutpage.component.html',
@@ -32,11 +32,13 @@ export class PreworkoutpageComponent implements OnInit {
   currentRoutine: Routine;
   todayDate: String;
   private _modal: boolean = false;
+  avgWeight: number;
 
 
   constructor(private apiService: ApiService, private data: DataService, private router: Router) { }
 
   ngOnInit(): void {
+    let dp = []
       this.data.currentRoutine.subscribe(r => this.currentRoutine = r);
       this.apiService.getAll("current").subscribe(r => this.currentWorkout = r);
 
@@ -47,15 +49,33 @@ export class PreworkoutpageComponent implements OnInit {
         }
          this.routines = this.initRoutines(data);
          console.log(["DAY OFF", "DAY OFF", "DAY OFF"]);
-
-         
-         
       });
       
-      this.apiService.getAll("entries").subscribe((data: RoutineEntry[]) => {
+      this.apiService.getAll("entries").subscribe(data => {
           this.entries = data;
-          this.lastEntry = data[data.length-1];
-          console.log(this.lastEntry.entryDate.toLocaleString())
+          this.lastEntry = data[0];
+
+          this.entries.forEach((x,index) => {
+            dp.push({y: x.totalWeightLifted})
+          })
+
+          let unique = []
+          data.forEach(element => {
+            //console.log(element.routine)
+            if (unique.indexOf(element.routine.id) === -1 ) {
+              unique.push(element.routine.id)
+            }
+          });
+
+          unique.forEach((element,index) => {
+            let temp = this.entries.filter(d=> d.routine.id === element)
+            this.entries.filter(d=> d.routine.id === element).forEach((x,index) => {
+              try {
+                x.netWeight = x.totalWeightLifted - temp[index+1].totalWeightLifted
+              } catch(error) {
+              }
+            })
+          })
         });
 
       this.apiService.getAll("users").subscribe((data: User) => {
@@ -70,6 +90,31 @@ export class PreworkoutpageComponent implements OnInit {
       this.todayDate = this.getFormattedDate()
       console.log(this.todayDate)
       console.log(this.lastEntry.entryDate.toLocaleString())
+
+
+      let chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: "Basic Column Chart in Angular"
+        },
+        data: [{
+          type: "column",
+          dataPoints: [
+            { y: 71, label: "Apple" },
+            { y: 55, label: "Mango" },
+            { y: 50, label: "Orange" },
+            { y: 65, label: "Banana" },
+            { y: 95, label: "Pineapple" },
+            { y: 68, label: "Pears" },
+            { y: 28, label: "Grapes" },
+            { y: 34, label: "Lychee" },
+            { y: 14, label: "Jackfruit" }
+          ]
+        }]
+      });
+        
+      chart.render();
   }
 
   initRoutines(user) {
@@ -161,6 +206,12 @@ export class PreworkoutpageComponent implements OnInit {
 
     return  (month < 10) ? "0"+month + "/" + dday + "/" + year : month + "/" + dday + "/" + year;
 
+}
+
+formatDBDate(date: Date): String {
+  var d = date.toString().split("T")[0].split("-");
+
+  return d[1]+"/"+d[2]+"/"+d[0]
 }
 
   showModal(): void {

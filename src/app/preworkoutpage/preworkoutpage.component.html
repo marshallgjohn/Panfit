@@ -7,7 +7,7 @@
                 <option *ngFor="let workout of workoutList" [value]="workout.id">{{workout.workoutName}}</option>
             </select>
         </div>
-        <button class="button" id="modal-submit" (click)="updateCurrentWorkout()" routerLinkActive="/">CHOOSE NEW ROUTINE</button>
+        <button class="button" id="modal-submit" (click)="updateCurrentWorkout()" routerLinkActive="/">CHANGE ROUTINE</button>
     </div>
 </div>
 
@@ -15,7 +15,7 @@
     <div id="title-section">
     <div><span class="space" id="title" > Welcome back {{user.userCredentials.username}}!</span></div>
     <span id="title">Current Routine: {{currentWorkout.workout.workoutName}}</span><br>
-    <span id="title">Current Workout: {{routines[1]}}</span>
+
     </div>
 
     <div id="workout-days">
@@ -28,7 +28,7 @@
             <p><span class="workout-title">{{dotw[6]}} {{dotw[4]}}, {{dotw[7]}}</span></p>
             <p>{{dotw[1]}}</p>
             <p>WORKOUT: {{routines[1]}}</p>
-            <p>AVG TIME: 1H 2M</p>
+            <p>AVG TIME: {{avgWeight}}</p>
             <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry===undefined || routines[1]!=='DAY OFF' && this.lastEntry.entryDate.toLocaleString()!==todayDate" class="button" type="submit" routerLink="/workout">START WORKOUT</button> 
             <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry.entryDate.toLocaleString()===todayDate" class="button" type="submit" disabled>COMPLETED</button>
         </div>
@@ -71,7 +71,8 @@
                     <li>
                         NET WEIGHT LIFTED:
                         <ul>
-                            <li>+100</li>
+                            <li [ngClass]="{'pos': lastEntry.netWeight > 0,
+                                'neg': lastEntry.netWeight < 0}">{{lastEntry.netWeight}}</li>
                         </ul>
                     </li>
                     <li>
@@ -99,7 +100,7 @@
             <span>WORKOUT HISTORY</span>
             <div id="history-inner">
                 <table>
-                    <tr>
+                    <tr id="test">
                         <th>DATE</th>
                         <th>WORKOUT</th>
                         <th>NET WEIGHT LIFTED</th>
@@ -108,15 +109,16 @@
                         <th># OF PR'S</th>
                         <th>TIME TO COMPLETE</th>
                     </tr>
-                    <tr *ngFor="let e of entries">
+                    <tr *ngFor="let e of entries;let x = index;">
                         <td>
-                            {{e.entryDate}}
+                            {{this.formatDBDate(e.entryDate)}}
                         </td>
                         <td>
                             {{e.routine.routineName}}
                         </td>
-                        <td>
-                            +100 lbs
+                        <td [ngClass]="{'pos': e.netWeight > 0,
+                                        'neg': e.netWeight < 0}">
+                            {{e.netWeight || 0}} lbs
                         </td>
                         <td>
                              {{e.totalWeightLifted}} lbs
@@ -137,4 +139,5 @@
         </div>
     </div>
     <div id="stats-section-undef" *ngIf="lastEntry.routine === undefined">Once you complete one workout, all of your stats will be listed in this area!</div>
+    <div id="chartContainer" style="height: 370px; width: 100%; z-index:  9999;"></div>
 </div>  

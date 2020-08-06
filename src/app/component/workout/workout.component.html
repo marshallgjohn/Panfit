@@ -1,18 +1,20 @@
 <div id="end-section">
+    <button id="end-workout-button" (click)="postWorkout()">
     <div id="rest-timer">
         REST: {{restTime}}
     </div>
     <div>
-        WORKOUT END
+        END WORKOUT
     </div>
     <div id="elapsed-timer">
         {{elapsedTime}}
     </div>
+    </button>
 </div>
 
 <div id="container">
     <h1>{{routine.routineName}}</h1>
-    <div *ngFor="let exercise of exercises" id="exercise-container">
+    <div *ngFor="let exercise of exercises;let x = index;" id="exercise-container">
         <div id="exercise-title-bar">
             <div id="exercise-title">
                 {{exercise.exercise.exerciseName}}
@@ -33,14 +35,13 @@
                 </tr>
                 <tr *ngFor="let item of setArray(exercise.routine_sets); let i = index;" >
                     <td>{{i+1}}</td>
-                    <td>0</td>
-                    <td><input type="text" required id="{{exercise.id}}-{{i+1}}-lbs" /></td>
-                    <td><input type="text" required id="{{exercise.id}}-{{i+1}}-reps" /></td>
+                    <td id="{{exercise.id}}-{{i+1}}-weight">{{test[i+((x*exercise.routine_sets)+(x))] || 0}} x {{prevReps[i+((x*exercise.routine_sets)+(x))] || 0}}</td>
+                    <td><input autocomplete="off" type="text" required id="{{exercise.id}}-{{i+1}}-lbs" placeholder="{{test[i+((x*exercise.routine_sets)+(x))] || 0}}"/></td>
+                    <td><input autocomplete="off" type="text" required id="{{exercise.id}}-{{i+1}}-reps" placeholder="{{prevReps[i+((x*exercise.routine_sets)+(x))] || 0}}"/></td>
                     <td>{{exercise.routine_goal_reps_min}} - {{exercise.routine_goal_reps_max}}</td>
-                    <td><button (click)="restTimer(exercise.routine_rest)">DONE</button></td>
+                    <td><button id="done-button" class="button" (click)="restTimer(exercise.routine_rest)">DONE</button></td>
                 </tr>
             </table>
         </div>
     </div>
-    <button id="submit-button" class="button" (click)="postWorkout()">Aq jeez</button>
 </div>

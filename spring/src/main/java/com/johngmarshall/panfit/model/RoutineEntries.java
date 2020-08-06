@@ -42,6 +42,7 @@ public class RoutineEntries {
   private int numOfSets;
 
 
+
   @Transient
   private int totalWeightLifted;
 
@@ -57,7 +58,25 @@ public class RoutineEntries {
     this.entryLength = entryLength;
     this.numOfSets = getNumOfSets();
     this.workoutLength = getWorkoutLength();
+
   }
+
+
+
+  @PostLoad
+  public void transDataLoad() {
+    int count = 0;
+    for (Sets sets : this.set) {
+      if (sets.getSetWeight() != 0 && sets.getSetReps() != 0) {
+        count++;
+      }
+    }
+
+    numOfSets = count;
+    this.set.forEach(sets -> this.totalWeightLifted += sets.getSetReps()*sets.getSetWeight());
+
+  }
+
 
   public Routine getRoutine() {
     return routine;
@@ -70,21 +89,22 @@ public class RoutineEntries {
     int minutes = hours % 60;
     hours /= 60;
 
-
-    return String.format("%dH %2dM %2dS",hours,minutes,seconds);
+    workoutLength = String.format("%dH %2dM %2dS",hours,minutes,seconds);
+    return workoutLength;
   }
 
   public int getEntryLength() {
     return entryLength;
   }
 
- public int getNumOfSets() {
-    return set.stream().mapToInt(Sets::getSetReps).sum();
+
+  public int getNumOfSets() {
+    return numOfSets;
   }
 
+
   public int getTotalWeightLifted() {
-    set.forEach(sets -> totalWeightLifted += sets.getSetReps()*sets.getSetWeight());
-    return  totalWeightLifted;
+    return totalWeightLifted;
   }
 
   public int getId() {
@@ -99,8 +119,8 @@ public class RoutineEntries {
 
 
 
-  public String getEntryDate() {
-    return new SimpleDateFormat("MM/dd/yyyy").format(entryDate);
+  public Date getEntryDate() {
+    return entryDate;//new SimpleDateFormat("MM/dd/yyyy").format(entryDate);
   }
 
   public void setId(int id) {
@@ -115,7 +135,21 @@ public class RoutineEntries {
     this.entryDate = entryDate;
   }
 
+  public void setWorkoutLength(String workoutLength) {
+    this.workoutLength = workoutLength;
+  }
+
+  public void setNumOfSets(int numOfSets) {
+    this.numOfSets = numOfSets;
+  }
+
+  public void setTotalWeightLifted(int totalWeightLifted) {
+    this.totalWeightLifted = totalWeightLifted;
+  }
+
   public void setEntryLength(int entryLength) {
     this.entryLength = entryLength;
   }
 }
+
+

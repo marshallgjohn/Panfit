@@ -8,9 +8,11 @@ export class RoutineEntry {
         public id: number,
         public routine: Routine,
         public entryDate: Date,
-        public entryLength: number
+        public entryLength: number,
+        public set: Sets[],
+        public netWeight: number = 0,
+        public totalWeightLifted: number =0
     ) {
-
         
     }
 }

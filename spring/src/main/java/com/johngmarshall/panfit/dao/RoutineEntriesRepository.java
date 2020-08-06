@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface RoutineEntriesRepository extends CrudRepository<RoutineEntries,Long> {
 
-  List<RoutineEntries> findRoutineEntriesByRoutineWorkoutUserUserCredentialsUsername(String username);
+  List<RoutineEntries> findRoutineEntriesByRoutineWorkoutUserUserCredentialsUsernameOrderByEntryDateDesc(String username);
 /*
   List<RoutineEntries> findRoutineEntriesByRoutineExerciseRoutineWorkoutUserUserCredentialsUsername(String username);
 *//*

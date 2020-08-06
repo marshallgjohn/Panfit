@@ -20,7 +20,7 @@ public class RoutineEntriesService {
 
 
   public List<RoutineEntries> getAllEntries(String username) {
-    return routineEntriesRepository.findRoutineEntriesByRoutineWorkoutUserUserCredentialsUsername(username);
+    return routineEntriesRepository.findRoutineEntriesByRoutineWorkoutUserUserCredentialsUsernameOrderByEntryDateDesc(username);
   }
 
   public RoutineEntries addEntry(RoutineEntries entry) {
