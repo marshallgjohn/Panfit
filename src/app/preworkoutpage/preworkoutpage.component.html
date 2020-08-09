@@ -28,7 +28,7 @@
             <p><span class="workout-title">{{dotw[6]}} {{dotw[4]}}, {{dotw[7]}}</span></p>
             <p>{{dotw[1]}}</p>
             <p>WORKOUT: {{routines[1]}}</p>
-            <p>AVG TIME: {{avgWeight}}</p>
+
             <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry===undefined || routines[1]!=='DAY OFF' && this.lastEntry.entryDate.toLocaleString()!==todayDate" class="button" type="submit" routerLink="/workout">START WORKOUT</button> 
             <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry.entryDate.toLocaleString()===todayDate" class="button" type="submit" disabled>COMPLETED</button>
         </div>
@@ -76,12 +76,6 @@
                         </ul>
                     </li>
                     <li>
-                        NUMBER OF PR'S:
-                        <ul>
-                            <li>2</li>
-                        </ul>
-                    </li>
-                    <li>
                         TIME TO COMPLETE:
                         <ul>
                             <li>{{lastEntry.workoutLength}}</li>
@@ -91,9 +85,14 @@
             </div>
         </div>
         <div id="progression-container">
-            <span>PROGRESSION</span>
+            <span>PROGRESSION - </span>
+            <select class="prog-select" (change)="onOptionSelect(select.value)" #select [formControl]="optionSelect">
+            <option *ngFor="let routines of dataSets" value={{routines.id}} >
+            {{routines.name}}
+            </option>
+        </select>
             <div id="progression-inner">
-                
+                <div id="chartContainer" style="height: 100%; width: 100%; z-index:  9999;"></div>
             </div>
         </div>
         <div id="history-container">
@@ -106,7 +105,6 @@
                         <th>NET WEIGHT LIFTED</th>
                         <th>TOTAL WEIGHT LIFTED</th>
                         <th>SETS COMPELTED</th>
-                        <th># OF PR'S</th>
                         <th>TIME TO COMPLETE</th>
                     </tr>
                     <tr *ngFor="let e of entries;let x = index;">
@@ -127,9 +125,6 @@
                             {{e.numOfSets}}
                         </td>
                         <td>
-                            4
-                        </td>
-                        <td>
                             {{e.workoutLength}}
                         </td>
                     </tr>
@@ -139,5 +134,5 @@
         </div>
     </div>
     <div id="stats-section-undef" *ngIf="lastEntry.routine === undefined">Once you complete one workout, all of your stats will be listed in this area!</div>
-    <div id="chartContainer" style="height: 370px; width: 100%; z-index:  9999;"></div>
+
 </div>  

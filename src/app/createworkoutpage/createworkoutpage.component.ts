@@ -11,6 +11,8 @@ import { Muscle } from '../model/muscle';
 import { Equipment } from '../model/equipment';
 import { Day }from '../model/day';
 import { CurrentWorkout } from '../model/currentWorkout';
+import {Router} from '@angular/router'
+
 
 @Component({
   selector: 'app-createworkoutpage',
@@ -56,6 +58,8 @@ export class CreateworkoutpageComponent implements OnInit {
   equipmentList: Equipment[] = []
   routineDotw: Day[] = [];
 
+  submitButtonText: string = "SUBMIT"
+
   selectedWorkout: Workout;
   workoutDeletedList: Workout[];
   tempExercises: Exercise[] = [];
@@ -65,7 +69,7 @@ export class CreateworkoutpageComponent implements OnInit {
   workoutNameControl: FormControl = new FormControl()
   dayControl: FormControl = new FormControl()
 
-  constructor(private apiService: ApiService, private formBuilder: FormBuilder) { 
+  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private router: Router) { 
   }
 
 
@@ -149,6 +153,7 @@ export class CreateworkoutpageComponent implements OnInit {
     this.tempExercises.forEach(data => this.exerciseList.push(data))
     this.tempExercises = []
     this.workoutTitle = true;
+    this.workoutInput = false;
 
     if(name == "New") {
       this.routineInput = true;
@@ -158,9 +163,11 @@ export class CreateworkoutpageComponent implements OnInit {
       this.routineSelect = false
       this.dayInput = true
       this.addExerciseButton = true
+      this.submitButtonText = "CREATE"
       
       
     } else {
+      this.submitButtonText = "UPDATE"
       this.routineInput = false;
       this.dayInput = true;
       this.newWorkoutInput = true
@@ -171,28 +178,42 @@ export class CreateworkoutpageComponent implements OnInit {
 
 
 onWorkoutSelect() {
+  
+  //Resets form
   this.workoutForm.reset()
+
+  //Pushs any removed modal exercies back to exercise list modal
   this.tempExercises.forEach(data => this.exerciseList.push(data))
+
+  //Clears lists
   this.tempExercises = []
   this.routineDeletedList = []
+
+  //Shows correct UI
   this.workoutTitle = true
   this.addExerciseButton = true
 
   console.log(this.workoutNameControl.value)
   if(this.workoutNameControl.value == "New") {
+    //Enables user input and clears list of all exercises
     this._dayInput = true;
     this._workoutInput = true;
     this.routineCurrentExercises = [] 
     this.newWorkoutInput = false;
     this.routineCurrentExercises = []
+    this.submitButtonText = "CREATE"
 
   } else {
-    this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
+    //Puts day of workout in day select
+    //this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
+    this.submitButtonText = "UPDATE"
 
     this._workoutInput = false;
-    //this.routineTempExercises = this.routineCurrentExercises.filter
+
+
     this.routineCurrentExercises = this.routineModalList.filter(re => re.routine.id == this.workoutNameControl.value.id)
 
+    //Filters any current exercise out of routine modal so user cannot pick an exercise twice
     this.routineCurrentExercises.forEach(data => { 
       this.exerciseList.filter(re => re.id == data.exercise.id).forEach(d => {
         if(!this.tempExercises.includes(d)) {
@@ -201,19 +222,19 @@ onWorkoutSelect() {
       })
       this.exerciseList = this.exerciseList.filter(re => re.id != data.exercise.id)
       })
-
-      this.routineDotw = []
-      for(let i = 0; i < 7; i++) {
-        this.routineDotw.push(new Day(i));
-      }
-      console.log(this.selectedWorkout)
-    this.selectedWorkout.routine.forEach(data => {
-      console.log(data.routineDay)
-      this.routineDotw = this.routineDotw.filter(re => re.num != data.routineDay || this.workoutNameControl.value.routineDay == re.num)
-    })
-      
     }
-
+          //Adds all 7 days to list of days
+          this.routineDotw = []
+          for(let i = 0; i < 7; i++) {
+            this.routineDotw.push(new Day(i));
+          }
+        
+      //Removes days of other workouts that already exist so two workouts are never on same day
+        this.selectedWorkout.routine.forEach(data => {
+          this.routineDotw = this.routineDotw.filter(re => re.num != data.routineDay || this.workoutNameControl.value.routineDay == re.num)
+        })
+        //console.log(this.workoutNameControl.value.routineDay)
+        this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
 
 }
 
@@ -264,8 +285,8 @@ onWorkoutSelect() {
         null))
         .subscribe(f => 
           {
-            //console.log(f)
-            if(this.currentWorkout == null) {
+            
+            if(this.currentWorkout === null) {
               this.apiService.post("/current",new CurrentWorkout(null,data,f.body)).subscribe(current => {
                 this.currentWorkout = current;
               });
@@ -281,6 +302,7 @@ onWorkoutSelect() {
               )
               ).subscribe(rout => {
                 let postExercises: RoutineExercise[] = [];
+                
 
                 this.routineCurrentExercises.forEach(data => {
                   //onsole.log(rout);
@@ -299,11 +321,18 @@ onWorkoutSelect() {
                     postExercises.push(x);
                 });
                 //console.log(postExercises);
-                this.apiService.post("/routineexercises",JSON.stringify(postExercises)).subscribe();
+                this.apiService.post("/routineexercises",JSON.stringify(postExercises)).subscribe(d => {
+                  console.log(f)
+                  f.body.routine = rout.body
+                  this.routineList.push(f.body)
+
+                });
+                
               });
             
               
           });
+         
     });
     } else {
       //console.log(this.routineDeletedList)
@@ -333,10 +362,25 @@ onWorkoutSelect() {
               );
               postExercises.push(x);
           });
-          //console.log(postExercises);
-          this.apiService.post("/routineexercises",JSON.stringify(postExercises)).subscribe();
+          this.apiService.post("/routineexercises",JSON.stringify(postExercises)).subscribe(xy=> {
+
+            //Adds any new workouts to list and makes sure it is not already in the list if just updating routine
+            if(this.selectedWorkout.routine.findIndex(i => i.id === rout.body.id) === -1) {
+              this.selectedWorkout.routine.push(rout.body)
+            }
+            
+            //Adds all specific exercises for the workout to screen
+            this.routineModalList = []
+            xy.body.forEach(element => {
+              this.routineModalList.push(element)
+            });
+         
+            
+          
+          });
         });
     }
+    //Deletes any exercises that were deleted by user
     this.apiService.delete("routineexercises",this.routineDeletedList).subscribe()
     //this.ngOnInit();
   }
@@ -385,9 +429,6 @@ onWorkoutSelect() {
     console.log(this.routineInput)
   }
 
-  onFocus() {
-    
-  }
 
   
   set modal(value: boolean) {

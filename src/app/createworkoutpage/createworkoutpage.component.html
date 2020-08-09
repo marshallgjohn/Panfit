@@ -38,7 +38,7 @@
             <button class="button" id="modal-submit" (click)="showCreateModal()">CREATE CUSTOM EXERCISE</button>
         </div>
     </div>
-    <button id="workout-add"  (click)="postAll()">SUBMIT</button>
+    <button id="workout-add"  (click)="postAll()">{{submitButtonText}}</button>
     <button id="workout-return" routerLink="">&lt; RETURN TO HOME</button>
     <form [formGroup]="workoutForm">
     <div>
