@@ -12,6 +12,8 @@ import { Equipment } from '../model/equipment';
 import { Day }from '../model/day';
 import { CurrentWorkout } from '../model/currentWorkout';
 import {Router} from '@angular/router'
+import { NotificationService } from '../services/notification.service';
+import { Notification } from '../model/notification';
 
 
 @Component({
@@ -71,7 +73,7 @@ export class CreateworkoutpageComponent implements OnInit {
   workoutNameControl: FormControl = new FormControl()
   dayControl: FormControl = new FormControl()
 
-  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private router: Router) { 
+  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private router: Router,private notif: NotificationService) { 
   }
 
 
@@ -298,6 +300,9 @@ onWorkoutSelect() {
             if(this.current) {
               this.apiService.post("/current",new CurrentWorkout(null,data,f.body)).subscribe(current => {
                 this.currentWorkout = current;
+                if(current.status === 400) {
+                  this.notif.changeNotification(new Notification("Failed to updated current routine! Please create another routine",false))
+                }
               });
             }
             
@@ -335,6 +340,9 @@ onWorkoutSelect() {
                   f.body.routine = rout.body
                   this.routineList.push(f.body)
 
+                  if(f.status === 200 && rout.status === 200) {
+                    this.notif.changeNotification(new Notification("New routine created successfully!",true))
+                  }
                 });
                 
               });
@@ -344,7 +352,6 @@ onWorkoutSelect() {
          
     });
     } else {
-      //console.log(this.routineDeletedList)
 
       this.apiService.post("/routines", 
       new Routine(
@@ -354,6 +361,9 @@ onWorkoutSelect() {
         this.routineControl.value
         )
         ).subscribe(rout => {
+          if(rout.status === 400) {
+            this.notif.changeNotification(new Notification("Data was malformed. Please look over you data and submit again!",false))
+          }
           let postExercises: RoutineExercise[] = [];
 
           this.routineCurrentExercises.forEach(data => {
@@ -372,6 +382,9 @@ onWorkoutSelect() {
               postExercises.push(x);
           });
           this.apiService.post("/routineexercises",JSON.stringify(postExercises)).subscribe(xy=> {
+            if(xy.status === 400) {
+              this.notif.changeNotification(new Notification("Data was malformed. Please look over you data and submit again!",false))
+            }
 
             //Adds any new workouts to list and makes sure it is not already in the list if just updating routine
             if(this.selectedWorkout.routine.findIndex(i => i.id === rout.body.id) === -1) {
@@ -385,8 +398,11 @@ onWorkoutSelect() {
             });
          
             
-          
+            if(rout.status === 200 && xy.status === 200) {
+              this.notif.changeNotification(new Notification("Update was a success!",true))
+            }
           });
+          
         });
     }
     //Deletes any exercises that were deleted by user

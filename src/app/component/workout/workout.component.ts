@@ -7,6 +7,8 @@ import { DataService } from 'src/app/services/data.service';
 import {RoutineEntry} from '../../model/routineEntry';
 import {Sets} from '../../model/sets';
 import {Router} from '@angular/router'
+import { NotificationService } from 'src/app/services/notification.service';
+import {Notification} from '../../model/notification';
 
 @Component({
   selector: 'app-workout',
@@ -27,7 +29,7 @@ export class WorkoutComponent implements OnInit {
   private _setCount: number =-1;
   private _prevReps: number[] = []
 
-  constructor(private apiService: ApiService, private data: DataService, private router: Router) { }
+  constructor(private apiService: ApiService, private data: DataService, private router: Router, private notif: NotificationService) { }
 
   ngOnInit(): void {
 
@@ -82,6 +84,13 @@ export class WorkoutComponent implements OnInit {
           JSON.stringify(this.createPostSets(data.body)
           )).subscribe(d => {
               this.router.navigateByUrl("")
+
+              if(data.status === 200 && d.status === 200) {
+                this.notif.changeNotification(new Notification("Update was a success!",true))
+                this.router.navigateByUrl("")
+              } else {
+                this.notif.changeNotification(new Notification("Error in submitting data",false))
+              }
           }
           );
       });
