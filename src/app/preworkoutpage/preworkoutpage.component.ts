@@ -27,20 +27,25 @@ export class PreworkoutpageComponent implements OnInit {
 
   private _graphData: any[] = [];
   private _dataSets: DataSet[] = [];
+  private _routines: String[];
+  private _modal: boolean = false;
+
+
+  private _workoutList: Workout[];
 
   private chart: any;
 
   workout: Workout;
   dotw: String[];
-  private _routines: String[];
-  workoutList: Workout[];
+
+  
   entries: RoutineEntry[];
   lastEntry: RoutineEntry;
   test: String;
   currentWorkout: CurrentWorkout;
   currentRoutine: Routine;
   todayDate: String;
-  private _modal: boolean = false;
+
   avgWeight: number;
   
 
@@ -57,27 +62,34 @@ export class PreworkoutpageComponent implements OnInit {
       this.createChart();
   }, 100)
 
-  //this.graphData = [{y: 3, name: "test"},{y:5, name: 2}]
 
   
+  this.apiService.getAll("workouts").subscribe((data: Workout[]) => {
+    if(data.length==0) {
+      this.router.navigateByUrl('/create-workout');
+    } else {
+    this.workoutList = data
+    }
 
+    console.log(this.workoutList)
+ });
     let dp = []
       this.data.currentRoutine.subscribe(r => this.currentRoutine = r);
       this.apiService.getAll("current").subscribe(r => this.currentWorkout = r);
       //this.optionSelect.patchValue((this.currentWorkout !== undefined) ? this.currentWorkout.id : "-")
 
       this.apiService.getAll("routines").subscribe((data: Routine[]) => {
-
-        if(data.length==0) {
-          this.router.navigateByUrl('/create-workout');
-        }
          this.routines = this.initRoutines(data);
+         //console.log(data)
          //console.log(["DAY OFF", "DAY OFF", "DAY OFF"]);
       });
       
       this.apiService.getAll("entries").subscribe(data => {
+          //console.log(data)
+          if(data.length > 0) {
           this.entries = data;
           this.lastEntry = data[0];
+          //console.log(this.lastEntry)
 
           let unique = []
           data.forEach(element => {
@@ -105,20 +117,24 @@ export class PreworkoutpageComponent implements OnInit {
               }
             })
             this.dataSets[indexy].data = this.dataSets[indexy].data.reverse()
-            console.log(this.dataSets[indexy].data)
+            //console.log(this.dataSets[indexy].data)
           })
+        } else {
+          this.entries = []
+          this.lastEntry = new RoutineEntry(null,null,null,null,null,null,null)
+          this.dataSets = []
+        }
+
         });
 
       this.apiService.getAll("users").subscribe((data: User) => {
         this.user = data;
      });
 
-     this.apiService.getAll("workouts").subscribe((data: Workout[]) => {
-        this.workoutList = data;
-        //console.log(this.workoutList)
-     });
+
       this.dotw = this.initDotw();
       this.todayDate = this.getFormattedDate()
+      console.log(this.todayDate)
 
 
       //console.log(this.dataSets)
@@ -171,7 +187,7 @@ export class PreworkoutpageComponent implements OnInit {
     let num = new Date().getDay();
     let r = ["DAY OFF","DAY OFF","DAY OFF"];
     user.forEach(element => {
-      console.log(element.routineDay)
+      //console.log(element.routineDay)
         switch(element.routineDay) {
           case num-1:
             r.splice(0,1,element.routineName.toUpperCase());
@@ -188,13 +204,13 @@ export class PreworkoutpageComponent implements OnInit {
             break;
       }
     });
-      console.log(r)
+      //console.log(r)
       return r;
   }
 
   onOptionSelect(value) {
     this.graphData = this.dataSets.filter(val => val.id === Number(value))[0].data
-    console.log(this.graphData)
+    //console.log(this.graphData)
     this.createChart()    
 
 
@@ -231,9 +247,15 @@ export class PreworkoutpageComponent implements OnInit {
   }
 
   updateCurrentWorkout() {
-    this.apiService.put("current",Number((<HTMLSelectElement>document.getElementById('current-select')).value)).subscribe()
 
-    this.ngOnInit()
+    const promise = new Promise((resolve,reject) => {
+
+    });
+    this.apiService.put("current",Number((<HTMLSelectElement>document.getElementById('current-select')).value)).subscribe(data => {
+      document.location.reload();
+    })
+
+    
    
   }
 
@@ -266,8 +288,11 @@ export class PreworkoutpageComponent implements OnInit {
 }
 
 formatDBDate(date: Date): String {
+  try {
   var d = date.toString().split("T")[0].split("-");
-
+  } catch {
+    return null
+  }
   return d[1]+"/"+d[2]+"/"+d[0]
 }
 
@@ -351,6 +376,22 @@ formatDBDate(date: Date): String {
 		this._dataSets = value;
 	}
   
+
+    /**
+     * Getter workoutList
+     * @return {Workout[]}
+     */
+	public get workoutList(): Workout[] {
+		return this._workoutList;
+	}
+
+    /**
+     * Setter workoutList
+     * @param {Workout[]} value
+     */
+	public set workoutList(value: Workout[]) {
+		this._workoutList = value;
+	}
 
 
 }

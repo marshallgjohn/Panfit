@@ -40,6 +40,8 @@ export class CreateworkoutpageComponent implements OnInit {
 
   private _addExerciseButton: boolean = false;
 
+  private current: boolean = false;
+
 
   routineCurrentExercises: RoutineExercise[] = []
   routineTempExercises: RoutineExercise[]
@@ -82,6 +84,13 @@ export class CreateworkoutpageComponent implements OnInit {
 }
 
   ngOnInit(): void {
+
+    this.apiService.getAll("current").subscribe(data => {
+      this.current = (data === null) ? true: false;
+      console.log(data)
+      console.log(this.current)
+    })
+
     this.apiService.getAll("exercises").subscribe(data => {
       this.exerciseList = data;
     });
@@ -286,7 +295,7 @@ onWorkoutSelect() {
         .subscribe(f => 
           {
             
-            if(this.currentWorkout === null) {
+            if(this.current) {
               this.apiService.post("/current",new CurrentWorkout(null,data,f.body)).subscribe(current => {
                 this.currentWorkout = current;
               });

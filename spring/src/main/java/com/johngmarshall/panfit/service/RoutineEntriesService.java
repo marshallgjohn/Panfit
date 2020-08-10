@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Calendar;
 
 @Service
 public class RoutineEntriesService {
@@ -20,7 +21,8 @@ public class RoutineEntriesService {
 
 
   public List<RoutineEntries> getAllEntries(String username) {
-    return routineEntriesRepository.findRoutineEntriesByRoutineWorkoutUserUserCredentialsUsernameOrderByEntryDateDesc(username);
+  //Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1
+    return routineEntriesRepository.findAllEntriesByRoutineId(username);
   }
 
   public RoutineEntries addEntry(RoutineEntries entry) {

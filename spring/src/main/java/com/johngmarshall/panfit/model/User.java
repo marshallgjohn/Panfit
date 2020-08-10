@@ -11,6 +11,7 @@ public class User {
   private int id;
 
   private String email;
+  
 
   @Embedded
   private UserCredentials userCredentials;
