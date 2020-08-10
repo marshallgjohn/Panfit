@@ -12,6 +12,8 @@ import {CurrentWorkout} from '../model/currentWorkout';
 import * as CanvasJS from '../../assets/js/canvasjs.min'
 import { Title } from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
+import { NotificationService } from '../services/notification.service';
+import { Notification } from '../model/notification';
 @Component({
   selector: 'app-preworkoutpage',
   templateUrl: './preworkoutpage.component.html',
@@ -54,7 +56,7 @@ export class PreworkoutpageComponent implements OnInit {
 
 
 
-  constructor(private apiService: ApiService, private data: DataService, private router: Router) { }
+  constructor(private apiService: ApiService, private data: DataService, private router: Router, private notif: NotificationService) { }
 
   ngOnInit(): void {
 
@@ -181,6 +183,10 @@ export class PreworkoutpageComponent implements OnInit {
     });
       
     this.chart.render();
+  }
+
+  onCompleted() {
+    this.notif.changeNotification(new Notification("Workout has been completed for today!",true))
   }
 
   initRoutines(user) {

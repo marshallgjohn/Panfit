@@ -54,12 +54,8 @@ export class WorkoutComponent implements OnInit {
           console.log(x.setPrevWeight)
           this.test.push(x.setPrevWeight)
           this.prevReps.push(x.setReps)
-          //console.log("WHY: "+this.test.length)
         })
-        //console.log("WHY: "+this.test.length)
-        //console.log("?")
       });
-      //console.log(this.test)
     
 
 
@@ -84,7 +80,10 @@ export class WorkoutComponent implements OnInit {
         this.apiService.post(
           "/sets/all",
           JSON.stringify(this.createPostSets(data.body)
-          )).subscribe();
+          )).subscribe(d => {
+              this.router.navigateByUrl("")
+          }
+          );
       });
   }
 
@@ -161,10 +160,7 @@ export class WorkoutComponent implements OnInit {
       } else {
         seconds=0;
       }
-      
-      //console.log(hours,hour);
-      //let minutes = (x - 3600 * hours) / 60;
-      //let seconds = (x - 3600 * hours - 60 * minutes);
+    
       this.elapsedTime =((hours < 10)? "0"+hours +"H" : hours + "H") + ((minutes < 10)? "0"+minutes+"M" : minutes + "M") + ((seconds < 10)? "0"+seconds+"S" : seconds + "S");
     });
   }

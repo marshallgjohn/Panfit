@@ -20,6 +20,7 @@ import { CommonModule } from '@angular/common';
 import { PreworkoutComponent } from './component/preworkout/preworkout.component';
 
 import {DragulaModule} from 'ng2-dragula';
+import { NotificationsComponent } from './component/notifications/notifications.component';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import {DragulaModule} from 'ng2-dragula';
     HomepageComponent,
     HomeComponent,
     PreworkoutComponent,
+    NotificationsComponent,
     //DragulaModule
   ],
   imports: [
