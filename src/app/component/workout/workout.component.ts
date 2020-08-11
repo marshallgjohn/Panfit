@@ -83,10 +83,10 @@ export class WorkoutComponent implements OnInit {
           "/sets/all",
           JSON.stringify(this.createPostSets(data.body)
           )).subscribe(d => {
-              this.router.navigateByUrl("")
+              //this.router.navigateByUrl("")
 
               if(data.status === 200 && d.status === 200) {
-                this.notif.changeNotification(new Notification("Update was a success!",true))
+                this.notif.changeNotification(new Notification("Workout was submitted successfully!",true))
                 this.router.navigateByUrl("")
               } else {
                 this.notif.changeNotification(new Notification("Error in submitting data",false))

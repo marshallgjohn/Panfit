@@ -89,8 +89,8 @@ export class CreateworkoutpageComponent implements OnInit {
 
     this.apiService.getAll("current").subscribe(data => {
       this.current = (data === null) ? true: false;
-      console.log(data)
-      console.log(this.current)
+      //console.log(data)
+      //console.log(this.current)
     })
 
     this.apiService.getAll("exercises").subscribe(data => {
@@ -131,7 +131,7 @@ export class CreateworkoutpageComponent implements OnInit {
 
 
   onClick(name: Exercise): void {
-      console.log(name);
+      //console.log(name);
       this.routineCurrentExercises.push(
         new RoutineExercise(
           null,
@@ -204,7 +204,7 @@ onWorkoutSelect() {
   this.workoutTitle = true
   this.addExerciseButton = true
 
-  console.log(this.workoutNameControl.value)
+  //console.log(this.workoutNameControl.value)
   if(this.workoutNameControl.value == "New") {
     //Enables user input and clears list of all exercises
     this._dayInput = true;
@@ -225,6 +225,7 @@ onWorkoutSelect() {
     this.routineCurrentExercises = this.routineModalList.filter(re => re.routine.id == this.workoutNameControl.value.id)
 
     //Filters any current exercise out of routine modal so user cannot pick an exercise twice
+    console.log(this.routineModalList)
     this.routineCurrentExercises.forEach(data => { 
       this.exerciseList.filter(re => re.id == data.exercise.id).forEach(d => {
         if(!this.tempExercises.includes(d)) {
@@ -246,9 +247,16 @@ onWorkoutSelect() {
         })
         //console.log(this.workoutNameControl.value.routineDay)
         this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
+        this.dayControl.setValue(this.workoutNameControl.value.routineDay)
+
 
 }
 
+  convertToMinute(num: number) {
+
+
+    return ~~(num/60);
+  }
 
 
   removeItemOnce(arr, value) {
@@ -271,7 +279,7 @@ onWorkoutSelect() {
   }
 
   deleteElement(exercise): void {
-    console.log(exercise)
+    //console.log(exercise)
     if(exercise.id !== null) {
       this.routineDeletedList.push(exercise)
     }
@@ -283,7 +291,7 @@ onWorkoutSelect() {
 
 
   postAll(): void {
-    console.log(this.routineControl.value)
+    //console.log(this.routineControl.value)
     if(this.routineControl.value == "New") {
     const l = this.apiService.getAll("users").subscribe(data => {
       this.apiService.post(
@@ -320,7 +328,7 @@ onWorkoutSelect() {
 
                 this.routineCurrentExercises.forEach(data => {
                   //onsole.log(rout);
-                  console.log(data)
+                  //console.log(data)
                   let x = new RoutineExercise(
                     null,
                     Number((document.getElementById(data.exercise.id + "-weight") as HTMLInputElement).value),
@@ -333,11 +341,15 @@ onWorkoutSelect() {
                     rout.body,
                     );
                     postExercises.push(x);
+                    
                 });
                 //console.log(postExercises);
                 this.apiService.post("/routineexercises",JSON.stringify(postExercises)).subscribe(d => {
-                  console.log(f)
+                  //console.log(f)
                   f.body.routine = rout.body
+
+
+                
                   this.routineList.push(f.body)
 
                   if(f.status === 200 && rout.status === 200) {
@@ -392,8 +404,10 @@ onWorkoutSelect() {
             }
             
             //Adds all specific exercises for the workout to screen
-            this.routineModalList = []
+            //this.routineModalList = []
+            
             xy.body.forEach(element => {
+              this.routineModalList = this.routineModalList.filter(x => x.id !== element.id)
               this.routineModalList.push(element)
             });
          
@@ -411,7 +425,6 @@ onWorkoutSelect() {
   }
 
   postExercise(): void {
-    //console.log("HELLO");
     this.apiService.post("/exercises",
     JSON.stringify(
     new Exercise(
@@ -425,13 +438,19 @@ onWorkoutSelect() {
         null
       ),
       (document.getElementById("exercise-name-input") as HTMLInputElement).value
-    ))).subscribe();
+    ))).subscribe(data => {
+      if(data.status === 200) {
+        this.notif.changeNotification(new Notification("Exercise was created successfully!",true))
+      }
+      this.exerciseList.push(data.body)
+
+    });
   }
 
 
 
   onBlur(input,id) {
-    console.log((<HTMLInputElement>document.getElementById(id)).value === "")
+    //console.log((<HTMLInputElement>document.getElementById(id)).value === "")
     if((<HTMLInputElement>document.getElementById(id)).value === "") {
       switch(input) {
         case "routineInput":
@@ -451,7 +470,7 @@ onWorkoutSelect() {
       }
     }
 
-    console.log(this.routineInput)
+    //console.log(this.routineInput)
   }
 
 

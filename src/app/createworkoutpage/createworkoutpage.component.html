@@ -89,9 +89,9 @@
                 <input type="number" value="{{exercise.routine_goal_reps_max}}" required id="{{exercise.id|| exercise.exercise.id}}-max-reps" class="list-reps-max-input" min=1 max=99 placeholder="12"/>
             </div>
             <div>
-                <input type="number" required id="{{exercise.id|| exercise.exercise.id}}-minutes" class="list-reps-min-input" min=1 max=99 placeholder="2"/>
+                <input type="number" value="{{convertToMinute(exercise.routine_rest)}}" required id="{{exercise.id|| exercise.exercise.id}}-minutes" class="list-reps-min-input" min=1 max=99 placeholder="2"/>
                 M
-                <input type="number" required id="{{exercise.id|| exercise.exercise.id}}-seconds" class="list-reps-min-input" min=1 max=99 placeholder="30"/>
+                <input type="number" value="{{exercise.routine_rest%60}}" required id="{{exercise.id|| exercise.exercise.id}}-seconds" class="list-reps-min-input" min=1 max=99 placeholder="30"/>
                 S
             </div>
             <button class="delete-button" (click)="deleteElement(exercise)">X</button>

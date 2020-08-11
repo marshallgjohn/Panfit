@@ -31,7 +31,7 @@
             <p>WORKOUT: {{routines[1]}}</p>
 
             <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry.id===null || routines[1]!=='DAY OFF' && formatDBDate(this.lastEntry.entryDate)!==todayDate" class="button" type="submit" routerLink="/workout">START WORKOUT</button> 
-            <button  *ngIf="routines[1]!=='DAY OFF' && this.lastEntry.id!==null" class="button" type="submit" (click)="onCompleted()">COMPLETED</button>
+            <button  *ngIf="routines[1]!=='DAY OFF' && formatDBDate(this.lastEntry.entryDate)===todayDate" class="button" type="submit" (click)="onCompleted()">COMPLETED</button>
         </div>
         <div class="workout-off">
             <p><span class="workout-title">{{dotw[6]}} {{dotw[5]}}, {{dotw[7]}}</span></p>
