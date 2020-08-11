@@ -8,6 +8,6 @@
 </nav>
 <nav *ngIf="accountService.isLoggedIn()" class="logged-in">
        <span id="panfit"><a routerLink="">PANFIT</a></span>
-       <button  class="button" id= "logout" (click)="this.accountService.logout()">LOGOUT</button>
+       <button  class="button" id= "logout" (click)="logout()">LOGOUT</button>
 </nav>
 
