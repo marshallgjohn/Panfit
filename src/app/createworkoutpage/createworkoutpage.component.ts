@@ -27,86 +27,119 @@ import { Notification } from '../model/notification';
 //TODO: when done/add exercise need to refresh or add to list
 export class CreateworkoutpageComponent implements OnInit {
 
-  private _modal: boolean = false;
+
+  //Variables for various parts of the screen to be hidden or shown
+  private _exerciseListModalShown: boolean = false;
+  private _createExerciseModalShown: boolean = false;
+  private _routineNameSelectShown: boolean = true;
+  private _workoutNameSelectShown: boolean = false;
+  private _routineSelectShown: boolean = true;
+  private _dayNameSelectShown: boolean = false;
+  private _newWorkoutNameInputShown: boolean = false;
+
+  private _addExerciseButtonShown: boolean = false;
+
+  private _currentWorkoutExists: boolean = false;
 
 
-  private _createModal: boolean = false;
-  private _routineInput: boolean = false;
-  private _workoutInput: boolean = false;
-  private _newWorkoutInput: boolean = true;
-  private _dayInput: boolean = false;
-
-  private _routineSelect: boolean = true;
-
-  private _workoutTitle: boolean = false;
-
-  private _addExerciseButton: boolean = false;
-
-  private current: boolean = false;
 
 
-  routineCurrentExercises: RoutineExercise[] = []
-  routineTempExercises: RoutineExercise[]
-  routineModalList: RoutineExercise[]
-  routineDeletedList: RoutineExercise[] = []
+  private _routineCurrentExercises: RoutineExercise[] = []
+  private _routineTempExercises: RoutineExercise[]
+  private _routineModalList: RoutineExercise[]
+  private _routineDeletedList: RoutineExercise[] = []
 
-  exercises: Exercise[] = []
-  exerciseList: Exercise[]
+  private _exercises: Exercise[] = []
+  private _exerciseList: Exercise[]
 
-  currentWorkout: Workout;
+  private _currentWorkout: Workout;
 
-  routineList: Workout[];
-  workoutForm: FormGroup;
-  selectedValue: any;
-  muscleList: Muscle[] = [];
-  equipmentList: Equipment[] = []
-  routineDotw: Day[] = [];
+  private _routineList: Workout[];
+  private _selectedValue: any;
+  private _muscleList: Muscle[] = [];
+  private _equipmentList: Equipment[] = []
+  private _routineDotw: Day[] = [];
 
-  submitButtonText: string = "SUBMIT"
+  private _submitButtonText: string = "SUBMIT"
 
-  selectedWorkout: Workout;
-  workoutDeletedList: Workout[];
-  tempExercises: Exercise[] = [];
+  private _selectedWorkout: Workout;
+  private _workoutDeletedList: Workout[];
+  private _tempExercises: Exercise[] = [];
 
 
-  routineControl: FormControl = new FormControl()
-  workoutNameControl: FormControl = new FormControl()
-  dayControl: FormControl = new FormControl()
+  routineNameSelectControl: FormControl = new FormControl()
+  workoutNameSelectControl: FormControl = new FormControl()
+  dayNameSelectControl: FormControl = new FormControl()
 
-  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private router: Router,private notif: NotificationService) { 
+  constructor(private apiService: ApiService,private notif: NotificationService) { 
   }
-
-
-  showModal(): void {
-      this.modal = !this.modal;
-  }
-
-  showCreateModal(): void {
-    this.createModal = !this.createModal;
-}
 
   ngOnInit(): void {
 
+    this.getAllApiData()
+
+    //Adds all DOTW to dayNameSelectControl
+    this.resetDotwList()
+
+    
+
+  }
+
+  addExerciseToCurrentExercises(name: Exercise): void {
+    this.routineCurrentExercises.push(
+      new RoutineExercise(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        name,
+        null))
+
+    this.exerciseList = this.removeItemFromExerciseList(this.exerciseList,name);
+}
+
+  //Converts rest time from database to minutes as is stored in seconds
+  convertToMinute(num: number) {
+
+
+    return ~~(num/60);
+  }
+
+  //Deletes exercise from a workout
+  deleteItemFromWorkout(exercise): void {
+    //If the exercise is not in the database dont send it to be deleted
+    if(exercise.id !== null) {
+      this.routineDeletedList.push(exercise)
+    }
+    //Adds exercise back to exercise masterlist and removes it from workout
+    this.exerciseList.push(exercise.exercise)
+    this.routineCurrentExercises = this.routineCurrentExercises.filter(data => data.exercise.id != exercise.exercise.id)
+
+  }
+
+  getAllApiData(): void {
+    
     this.apiService.getAll("current").subscribe(data => {
-      this.current = (data === null) ? true: false;
-      //console.log(data)
-      //console.log(this.current)
+      this._currentWorkoutExists = (data === null) ? true: false;
     })
 
     this.apiService.getAll("exercises").subscribe(data => {
       this.exerciseList = data;
-    });
+    })
     this.apiService.getAll("workouts").subscribe(data => {
       this.routineList = data;
-    });
+    })
 
     this.apiService.getAll("muscles").subscribe(data => {
       this.muscleList = data;
-    });
+    })
 
     this.apiService.getAll("equipment").subscribe(data => {
       this.equipmentList = data;
-    });
+    })
 
     this.apiService.getAll("routineexercises").subscribe(data => {
       this.routineModalList = data;
@@ -116,184 +149,152 @@ export class CreateworkoutpageComponent implements OnInit {
       this.currentWorkout = data.workout
     })
 
+  }
 
-    this.workoutForm = new FormGroup({
-      routineControl: new FormControl(),
-      workoutNameControl: new FormControl(),
-      dayControl: new FormControl()
-    });
+  //When user selects new workout/new routine if they type nothing then click out
+  //it resets back to the dropdown list so they can choose something instead of
+  //creating new workout
+  onBlur(input,id) {
+    if((<HTMLInputElement>document.getElementById(id)).value !== "") return
 
-    for(let i = 0; i < 7; i++) {
-      this.routineDotw.push(new Day(i));
+    switch(input) {
+      case "routineInput":
+        //Shows routine name select and resets it value
+        this.routineNameSelect = true;
+        this.routineNameSelectControl.reset()
+
+        this.workoutNameSelect = false
+        this.newWorkoutNameInput = false
+        this.dayNameSelect = false
+        this.addExerciseButton = false
+      
+        
+        break;
+      case "newWorkoutInput":
+          if(!this.routineNameSelect) return
+            this.newWorkoutNameInput = false;
+            this.workoutNameSelect = true;
+            this.workoutNameSelectControl.reset()
+          
+          break;
     }
-
   }
 
-
-  onClick(name: Exercise): void {
-      //console.log(name);
-      this.routineCurrentExercises.push(
-        new RoutineExercise(
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          name,
-          null))
-
-      this.exerciseList = this.removeItemOnceD(this.exerciseList,name);
-      //console.log("Clicked");
-  }
-
-  onOptionSelect(name): void {
-    this.routineCurrentExercises.forEach(data => console.log(data))
+  onRoutineSelect(name): void {
+    //Clears all lists
+    this.exercises = [];
+    this.tempExercises = []
+    this.routineDeletedList = []
     this.routineCurrentExercises = []
 
-    
-    this.workoutNameControl.setValue("hidden")
-    this.dayControl.setValue("hidden")
+    //Sets selected workout to what was selected by user
+    this.selectedWorkout = this.routineNameSelectControl.value;
 
-    this.selectedWorkout = this.routineControl.value;
 
-    this.routineDeletedList = []
-
-    this.exercises = [];
+    //Pushes the temp exercises back to the master exercise list
     this.tempExercises.forEach(data => this.exerciseList.push(data))
-    this.tempExercises = []
-    this.workoutTitle = true;
-    this.workoutInput = false;
 
+    //Shows workout select and hides day name select
+    this.workoutNameSelect = true;
+    this.dayNameSelect = false
+
+    //this.routineNameSelectControl.
+
+    //Hides diddferent parts 
     if(name == "New") {
-      this.routineInput = true;
-      this.workoutInput = true;
-      this.newWorkoutInput = false
       this.routineCurrentExercises = []
-      this.routineSelect = false
-      this.dayInput = true
+
+      this.routineNameSelect = false;
+      this.workoutNameSelect = false;
+
+      this.newWorkoutNameInput = true
+
       this.addExerciseButton = true
       this.submitButtonText = "CREATE"
+      this.dayNameSelect = true
       
       
     } else {
       this.submitButtonText = "UPDATE"
-      this.routineInput = false;
-      this.dayInput = true;
-      this.newWorkoutInput = true
+      this.routineNameSelect = true;
+      this.newWorkoutNameInput = false
     }
-    
-     
   } 
 
-
-onWorkoutSelect() {
-  
-  //Resets form
-  this.workoutForm.reset()
-
-  //Pushs any removed modal exercies back to exercise list modal
-  this.tempExercises.forEach(data => this.exerciseList.push(data))
-
-  //Clears lists
-  this.tempExercises = []
-  this.routineDeletedList = []
-
-  //Shows correct UI
-  this.workoutTitle = true
-  this.addExerciseButton = true
-
-  //console.log(this.workoutNameControl.value)
-  if(this.workoutNameControl.value == "New") {
-    //Enables user input and clears list of all exercises
-    this._dayInput = true;
-    this._workoutInput = true;
-    this.routineCurrentExercises = [] 
-    this.newWorkoutInput = false;
-    this.routineCurrentExercises = []
-    this.submitButtonText = "CREATE"
-
-  } else {
-    //Puts day of workout in day select
-    //this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
-    this.submitButtonText = "UPDATE"
-
-    this._workoutInput = false;
-
-
-    this.routineCurrentExercises = this.routineModalList.filter(re => re.routine.id == this.workoutNameControl.value.id)
-
-    //Filters any current exercise out of routine modal so user cannot pick an exercise twice
-    console.log(this.routineModalList)
-    this.routineCurrentExercises.forEach(data => { 
-      this.exerciseList.filter(re => re.id == data.exercise.id).forEach(d => {
-        if(!this.tempExercises.includes(d)) {
-          this.tempExercises.push(d)
-        }
-      })
-      this.exerciseList = this.exerciseList.filter(re => re.id != data.exercise.id)
-      })
-    }
-          //Adds all 7 days to list of days
-          this.routineDotw = []
-          for(let i = 0; i < 7; i++) {
-            this.routineDotw.push(new Day(i));
-          }
-        
-      //Removes days of other workouts that already exist so two workouts are never on same day
-        this.selectedWorkout.routine.forEach(data => {
-          this.routineDotw = this.routineDotw.filter(re => re.num != data.routineDay || this.workoutNameControl.value.routineDay == re.num)
-        })
-        //console.log(this.workoutNameControl.value.routineDay)
-        this.dayControl.patchValue(this.workoutNameControl.value.routineDay)
-        this.dayControl.setValue(this.workoutNameControl.value.routineDay)
-
-
-}
-
-  convertToMinute(num: number) {
-
-
-    return ~~(num/60);
-  }
-
-
-  removeItemOnce(arr, value) {
-    var pos = arr.map(function(e) {return e.num;})
-    var index = pos.indexOf(value);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-    return arr;
-  }
-
-  
-  removeItemOnceD(arr, value) {
-    var pos = arr.map(function(e) {return e.id;})
-    var index = pos.indexOf(value.id);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-    return arr;
-  }
-
-  deleteElement(exercise): void {
-    //console.log(exercise)
-    if(exercise.id !== null) {
-      this.routineDeletedList.push(exercise)
-    }
+  onWorkoutSelect() {
     
-    this.exerciseList.push(exercise.exercise)
-    this.routineCurrentExercises = this.routineCurrentExercises.filter(data => data.exercise.id != exercise.exercise.id)
+
+
+    //Pushs any removed modal exercies back to exercise list modal
+    this.tempExercises.forEach(data => this.exerciseList.push(data))
+
+    //Clears lists
+    this.tempExercises = []
+    this.routineDeletedList = []
+
+    //Shows correct UI
+    this.addExerciseButton = true
+    this.dayNameSelect = true
+
+    //console.log(this.workoutNameControl.value)
+    if(this.workoutNameSelectControl.value == "New") {
+      this._dayNameSelectShown = true;
+      this._workoutNameSelectShown = false;
+      this.newWorkoutNameInput = true;
+
+      //Clears list of any exercises already in select exercise list
+      this.routineCurrentExercises = [] 
+
+
+      this.submitButtonText = "CREATE"
+
+    } else {
+
+
+      this.submitButtonText = "UPDATE"
+
+      this._workoutNameSelectShown = true;
+
+      //Gets exercises in workout and shows them on screen
+      this.routineCurrentExercises = this.routineModalList.filter(re => re.routine.id == this.workoutNameSelectControl.value.id)
+
+      //For each current exercise it pushes it to a temporary list so that it can be added back to the master list once the workout/routine is changed
+      this.routineCurrentExercises
+        .forEach(data => { 
+            this.exerciseList
+              .filter(re => re.id == data.exercise.id)
+                .forEach(d => {
+                  if(!this.tempExercises.includes(d)) {
+                    this.tempExercises.push(d)
+                  }
+                })
+
+        //Then filters out all current exercises from the exercise list so you cannot have more than one of the same exercise
+          this.exerciseList = this.exerciseList.filter(re => re.id != data.exercise.id)
+        })
+      }
+    
+
+      this.resetDotwList()
+
+          
+      //Removes days of other workouts that already exist so two workouts are never on same day
+      this.selectedWorkout.routine
+        .forEach(data => {
+          this.routineDotw = this.routineDotw.filter(re => re.num != data.routineDay || this.workoutNameSelectControl.value.routineDay == re.num)
+      })
+
+        //Sets value of dayNameSelectControl to DOTW that workout is on
+      this.dayNameSelectControl.patchValue(this.workoutNameSelectControl.value.routineDay)
+        
+
 
   }
-
 
   postAll(): void {
     //console.log(this.routineControl.value)
-    if(this.routineControl.value == "New") {
-    const l = this.apiService.getAll("users").subscribe(data => {
+    if(this.routineNameSelectControl.value === "New") {
+    this.apiService.getAll("users").subscribe(data => {
       this.apiService.post(
         "/workouts",
       new Workout(
@@ -305,7 +306,7 @@ onWorkoutSelect() {
         .subscribe(f => 
           {
             
-            if(this.current) {
+            if(this._currentWorkoutExists) {
               this.apiService.post("/current",new CurrentWorkout(null,data,f.body)).subscribe(current => {
                 this.currentWorkout = current;
                 if(current.status === 400) {
@@ -318,7 +319,7 @@ onWorkoutSelect() {
             this.apiService.post("/routines", 
             new Routine(
               null,
-              this.dayControl.value,
+              this.dayNameSelectControl.value,
               (document.getElementById("name") as HTMLInputElement).value,
               f.body
               )
@@ -328,7 +329,7 @@ onWorkoutSelect() {
 
                 this.routineCurrentExercises.forEach(data => {
                   //onsole.log(rout);
-                  //console.log(data)
+                  console.log(data)
                   let x = new RoutineExercise(
                     null,
                     Number((document.getElementById(data.exercise.id + "-weight") as HTMLInputElement).value),
@@ -367,12 +368,13 @@ onWorkoutSelect() {
 
       this.apiService.post("/routines", 
       new Routine(
-        this.workoutNameControl.value.id,
-        this.dayControl.value,
-        (this._workoutInput) ? (document.getElementById("name") as HTMLInputElement).value : this.workoutNameControl.value.routineName,
-        this.routineControl.value
+        this.workoutNameSelectControl.value.id,
+        this.dayNameSelectControl.value,
+        (!this.workoutNameSelectShown) ? (document.getElementById("name") as HTMLInputElement).value : this.workoutNameSelectControl.value.routineName,
+        this.routineNameSelectControl.value
         )
         ).subscribe(rout => {
+          console.log(rout)
           if(rout.status === 400) {
             this.notif.changeNotification(new Notification("Data was malformed. Please look over you data and submit again!",false))
           }
@@ -403,8 +405,6 @@ onWorkoutSelect() {
               this.selectedWorkout.routine.push(rout.body)
             }
             
-            //Adds all specific exercises for the workout to screen
-            //this.routineModalList = []
             
             xy.body.forEach(element => {
               this.routineModalList = this.routineModalList.filter(x => x.id !== element.id)
@@ -424,6 +424,7 @@ onWorkoutSelect() {
     //this.ngOnInit();
   }
 
+  //Posts new exercise to database and adds it to exercise master list
   postExercise(): void {
     this.apiService.post("/exercises",
     JSON.stringify(
@@ -439,88 +440,116 @@ onWorkoutSelect() {
       ),
       (document.getElementById("exercise-name-input") as HTMLInputElement).value
     ))).subscribe(data => {
+      //if data was submitted successfully tells user
       if(data.status === 200) {
         this.notif.changeNotification(new Notification("Exercise was created successfully!",true))
+        this.exerciseList.push(data.body)
+      } else {
+        this.notif.changeNotification(new Notification("Exercise could not be created, please try again!",false))
       }
-      this.exerciseList.push(data.body)
+      
 
     });
   }
 
+  //Adds all DOTW values to dotw list so days can be refiltered thru for each routine
+  resetDotwList() {
+    this.routineDotw = [new Day(0),new Day(1),new Day(2),new Day(3),new Day(4),new Day(5),new Day(6)]
+  }
 
+  //Removes item from master exercise list
+  removeItemFromExerciseList(arr, value) {
+      var pos = arr.map(function(e) {return e.id;})
+      var index = pos.indexOf(value.id);
+    
 
-  onBlur(input,id) {
-    //console.log((<HTMLInputElement>document.getElementById(id)).value === "")
-    if((<HTMLInputElement>document.getElementById(id)).value === "") {
-      switch(input) {
-        case "routineInput":
-          this.routineInput = false;
-          this.routineSelect = true;
-          this.workoutInput = false
-          this.dayInput = false
-          this.workoutTitle = false
-          this.routineControl.reset()
-          break;
-        case "newWorkoutInput":
-          if(!this.routineInput) {
-          this.newWorkoutInput = true;
-          this.workoutInput = false;
-          }
-          break;
-      }
+    if (index > -1) {
+      arr.splice(index, 1);
     }
+    return arr;
+  }
 
-    //console.log(this.routineInput)
+  showExerciseCreateModal(): void {
+    this.createExerciseModalShown = !this.createExerciseModalShown;
+  }
+
+  showExerciseListModal(): void {
+      this.exerciseListModalShown = !this.exerciseListModalShown;
   }
 
 
-  
-  set modal(value: boolean) {
-    this._modal = value;
+
+  set routineTempExercises(value: RoutineExercise[]) {
+    this._routineTempExercises = value;
   }
 
-  get modal() {
-    return this._modal;
+  get routineTempExercises() {
+    return this._routineTempExercises;
   }
 
-  set createModal(value: boolean) {
-    this._createModal = value;
+  set routineModalList(value: RoutineExercise[]) {
+    this._routineModalList = value;
   }
 
-  get createModal() {
-    return this._createModal;
+  get routineModalList() {
+    return this._routineModalList;
   }
 
-  set routineInput(value: boolean) {
-    this._routineInput = value;
+  set exerciseList(value: Exercise[]) {
+    this._exerciseList = value;
   }
 
-  get routineInput() {
-    return this._routineInput
+  get exerciseList() {
+    return this._exerciseList;
   }
 
-  set workoutInput(value: boolean) {
-    this._workoutInput = value;
+
+  set exerciseListModalShown(value: boolean) {
+    this._exerciseListModalShown = value;
   }
 
-  get workoutInput() {
-    return this._workoutInput
+  get exerciseListModalShown() {
+    return this._exerciseListModalShown;
+  }
+
+  set createExerciseModalShown(value: boolean) {
+    this._createExerciseModalShown = value;
+  }
+
+  get createExerciseModalShown() {
+    return this._createExerciseModalShown;
+  }
+
+  set routineNameSelect(value: boolean) {
+    this._routineNameSelectShown = value;
+  }
+
+  get routineNameSelect() {
+    return this._routineNameSelectShown
+  }
+
+  set workoutNameSelect(value: boolean) {
+    this._workoutNameSelectShown = value;
+  }
+
+  get workoutNameSelect() {
+    return this._workoutNameSelectShown
   }
 
       /**
      * Getter dayInput
      * @return {boolean }
      */
-	public get dayInput(): boolean  {
-		return this._dayInput;
+	public get dayNameSelect(): boolean  {
+		return this._dayNameSelectShown;
 	}
 
     /**
      * Setter dayInput
      * @param {boolean } value
      */
-	public set dayInput(value: boolean ) {
-		this._dayInput = value;
+	public set dayNameSelect(value: boolean ) {
+		this._dayNameSelectShown = value;
   }
   
 
@@ -528,16 +557,16 @@ onWorkoutSelect() {
      * Getter newWorkoutInput
      * @return {boolean }
      */
-	public get newWorkoutInput(): boolean  {
-		return this._newWorkoutInput;
+	public get newWorkoutNameInput(): boolean  {
+		return this._newWorkoutNameInputShown;
 	}
 
     /**
      * Setter newWorkoutInput
      * @param {boolean } value
      */
-	public set newWorkoutInput(value: boolean ) {
-		this._newWorkoutInput = value;
+	public set newWorkoutNameInput(value: boolean ) {
+		this._newWorkoutNameInputShown = value;
 	}
 
 
@@ -546,7 +575,7 @@ onWorkoutSelect() {
      * @return {boolean }
      */
 	public get routineSelect(): boolean  {
-		return this._routineSelect;
+		return this._routineSelectShown;
 	}
 
     /**
@@ -554,24 +583,7 @@ onWorkoutSelect() {
      * @param {boolean } value
      */
 	public set routineSelect(value: boolean ) {
-		this._routineSelect = value;
-  }
-  
-
-    /**
-     * Getter workoutTitle
-     * @return {boolean }
-     */
-	public get workoutTitle(): boolean  {
-		return this._workoutTitle;
-	}
-
-    /**
-     * Setter workoutTitle
-     * @param {boolean } value
-     */
-	public set workoutTitle(value: boolean ) {
-		this._workoutTitle = value;
+		this._routineSelectShown = value;
   }
   
 
@@ -580,7 +592,7 @@ onWorkoutSelect() {
      * @return {boolean }
      */
 	public get addExerciseButton(): boolean  {
-		return this._addExerciseButton;
+		return this._addExerciseButtonShown;
 	}
 
     /**
@@ -588,9 +600,348 @@ onWorkoutSelect() {
      * @param {boolean } value
      */
 	public set addExerciseButton(value: boolean ) {
-		this._addExerciseButton = value;
+		this._addExerciseButtonShown = value;
 	}
 
+
+
+    /**
+     * Getter tempExercises
+     * @return {Exercise[] }
+     */
+	public get tempExercises(): Exercise[]  {
+		return this._tempExercises;
+	}
+
+    /**
+     * Setter tempExercises
+     * @param {Exercise[] } value
+     */
+	public set tempExercises(value: Exercise[] ) {
+		this._tempExercises = value;
+	}
+  
+
+    /**
+     * Getter workoutDeletedList
+     * @return {Workout[]}
+     */
+	public get workoutDeletedList(): Workout[] {
+		return this._workoutDeletedList;
+	}
+
+    /**
+     * Setter workoutDeletedList
+     * @param {Workout[]} value
+     */
+	public set workoutDeletedList(value: Workout[]) {
+		this._workoutDeletedList = value;
+	}
+
+
+    /**
+     * Getter selectedWorkout
+     * @return {Workout}
+     */
+	public get selectedWorkout(): Workout {
+		return this._selectedWorkout;
+	}
+
+    /**
+     * Setter selectedWorkout
+     * @param {Workout} value
+     */
+	public set selectedWorkout(value: Workout) {
+		this._selectedWorkout = value;
+	}
+  
+
+    /**
+     * Getter submitButtonText
+     * @return {string }
+     */
+	public get submitButtonText(): string  {
+		return this._submitButtonText;
+	}
+
+    /**
+     * Setter submitButtonText
+     * @param {string } value
+     */
+	public set submitButtonText(value: string ) {
+		this._submitButtonText = value;
+	}
+
+
+    /**
+     * Getter routineDotw
+     * @return {Day[] }
+     */
+	public get routineDotw(): Day[]  {
+		return this._routineDotw;
+	}
+
+    /**
+     * Setter routineDotw
+     * @param {Day[] } value
+     */
+	public set routineDotw(value: Day[] ) {
+		this._routineDotw = value;
+	}
+
+
+    /**
+     * Getter equipmentList
+     * @return {Equipment[] }
+     */
+	public get equipmentList(): Equipment[]  {
+		return this._equipmentList;
+	}
+
+    /**
+     * Setter equipmentList
+     * @param {Equipment[] } value
+     */
+	public set equipmentList(value: Equipment[] ) {
+		this._equipmentList = value;
+	}
+
+
+    /**
+     * Getter muscleList
+     * @return {Muscle[] }
+     */
+	public get muscleList(): Muscle[]  {
+		return this._muscleList;
+	}
+
+    /**
+     * Setter muscleList
+     * @param {Muscle[] } value
+     */
+	public set muscleList(value: Muscle[] ) {
+		this._muscleList = value;
+	}
+
+
+    /**
+     * Getter selectedValue
+     * @return {any}
+     */
+	public get selectedValue(): any {
+		return this._selectedValue;
+	}
+
+    /**
+     * Setter selectedValue
+     * @param {any} value
+     */
+	public set selectedValue(value: any) {
+		this._selectedValue = value;
+	}
+
+    /**
+     * Getter routineList
+     * @return {Workout[]}
+     */
+	public get routineList(): Workout[] {
+		return this._routineList;
+	}
+
+    /**
+     * Setter routineList
+     * @param {Workout[]} value
+     */
+	public set routineList(value: Workout[]) {
+		this._routineList = value;
+	}
+
+
+    /**
+     * Getter currentWorkout
+     * @return {Workout}
+     */
+	public get currentWorkout(): Workout {
+		return this._currentWorkout;
+	}
+
+    /**
+     * Setter currentWorkout
+     * @param {Workout} value
+     */
+	public set currentWorkout(value: Workout) {
+		this._currentWorkout = value;
+	}
+
+
+    /**
+     * Getter exercises
+     * @return {Exercise[] }
+     */
+	public get exercises(): Exercise[]  {
+		return this._exercises;
+	}
+
+    /**
+     * Setter exercises
+     * @param {Exercise[] } value
+     */
+	public set exercises(value: Exercise[] ) {
+		this._exercises = value;
+	}
+
+
+    /**
+     * Getter routineDeletedList
+     * @return {RoutineExercise[] }
+     */
+	public get routineDeletedList(): RoutineExercise[]  {
+		return this._routineDeletedList;
+	}
+
+    /**
+     * Setter routineDeletedList
+     * @param {RoutineExercise[] } value
+     */
+	public set routineDeletedList(value: RoutineExercise[] ) {
+		this._routineDeletedList = value;
+	}
+
+
+    /**
+     * Getter routineCurrentExercises
+     * @return {RoutineExercise[] }
+     */
+	public get routineCurrentExercises(): RoutineExercise[]  {
+		return this._routineCurrentExercises;
+	}
+
+    /**
+     * Setter routineCurrentExercises
+     * @param {RoutineExercise[] } value
+     */
+	public set routineCurrentExercises(value: RoutineExercise[] ) {
+		this._routineCurrentExercises = value;
+	}
+
+
+    /**
+     * Getter currentWorkoutExists
+     * @return {boolean }
+     */
+	public get currentWorkoutExists(): boolean  {
+		return this._currentWorkoutExists;
+	}
+
+    /**
+     * Setter currentWorkoutExists
+     * @param {boolean } value
+     */
+	public set currentWorkoutExists(value: boolean ) {
+		this._currentWorkoutExists = value;
+	}
+
+
+    /**
+     * Getter addExerciseButtonShown
+     * @return {boolean }
+     */
+	public get addExerciseButtonShown(): boolean  {
+		return this._addExerciseButtonShown;
+	}
+
+    /**
+     * Setter addExerciseButtonShown
+     * @param {boolean } value
+     */
+	public set addExerciseButtonShown(value: boolean ) {
+		this._addExerciseButtonShown = value;
+	}
+
+
+    /**
+     * Getter newWorkoutNameInputShown
+     * @return {boolean }
+     */
+	public get newWorkoutNameInputShown(): boolean  {
+		return this._newWorkoutNameInputShown;
+	}
+
+    /**
+     * Setter newWorkoutNameInputShown
+     * @param {boolean } value
+     */
+	public set newWorkoutNameInputShown(value: boolean ) {
+		this._newWorkoutNameInputShown = value;
+	}
+
+
+    /**
+     * Getter dayNameSelectShown
+     * @return {boolean }
+     */
+	public get dayNameSelectShown(): boolean  {
+		return this._dayNameSelectShown;
+	}
+
+    /**
+     * Setter dayNameSelectShown
+     * @param {boolean } value
+     */
+	public set dayNameSelectShown(value: boolean ) {
+		this._dayNameSelectShown = value;
+	}
+
+
+    /**
+     * Getter routineSelectShown
+     * @return {boolean }
+     */
+	public get routineSelectShown(): boolean  {
+		return this._routineSelectShown;
+	}
+
+    /**
+     * Setter routineSelectShown
+     * @param {boolean } value
+     */
+	public set routineSelectShown(value: boolean ) {
+		this._routineSelectShown = value;
+	}
+
+
+    /**
+     * Getter workoutNameSelectShown
+     * @return {boolean }
+     */
+	public get workoutNameSelectShown(): boolean  {
+		return this._workoutNameSelectShown;
+	}
+
+    /**
+     * Setter workoutNameSelectShown
+     * @param {boolean } value
+     */
+	public set workoutNameSelectShown(value: boolean ) {
+		this._workoutNameSelectShown = value;
+	}
+
+
+    /**
+     * Getter routineNameSelectShown
+     * @return {boolean }
+     */
+	public get routineNameSelectShown(): boolean  {
+		return this._routineNameSelectShown;
+	}
+
+    /**
+     * Setter routineNameSelectShown
+     * @param {boolean } value
+     */
+	public set routineNameSelectShown(value: boolean ) {
+		this._routineNameSelectShown = value;
+	}
 
 
 

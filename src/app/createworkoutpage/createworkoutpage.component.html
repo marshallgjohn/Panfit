@@ -1,9 +1,9 @@
 
 <div id="container">
 
-    <div *ngIf="createModal" id="create-modal-background">
+    <div *ngIf="createExerciseModalShown" id="create-modal-background">
         <div id="create-add-container">
-            <button id="create-close-modal" (click)="showCreateModal()">X</button>
+            <button id="create-close-modal" (click)="showExerciseCreateModal()">X</button>
             <div id="create-modal-components">
                 <label id="create-modal-label">Create Custom Exercise</label>
                 <input type="input" class="workout-info" id="exercise-name-input" placeholder="Exercise Name">
@@ -25,37 +25,37 @@
         </div>
     </div>
     
-    <div *ngIf="modal" id="modal-background">
+    <div *ngIf="exerciseListModalShown" id="modal-background">
         <div id="add-container">
-            <button id="close-modal" (click)="showModal()">X</button>
+            <button id="close-modal" (click)="showExerciseListModal(exerciseListModalShown)">X</button>
             <div id="modal-components">
                 <label id="modal-label">Exercise List</label>
                 <input type="text" id="modal-search" placeholder="Search..."/>
                 <div id="modal-list">
-                    <button *ngFor="let exercise of exerciseList" (click)="onClick(exercise)">{{exercise.exerciseName}}</button>
+                    <button *ngFor="let exercise of exerciseList" (click)="addExerciseToCurrentExercises(exercise)">{{exercise.exerciseName}}</button>
                 </div>
             </div>
-            <button class="button" id="modal-submit" (click)="showCreateModal()">CREATE CUSTOM EXERCISE</button>
+            <button class="button"  id="modal-submit" (click)="showExerciseCreateModal()">CREATE CUSTOM EXERCISE</button>
         </div>
     </div>
-    <button id="workout-add"  (click)="postAll()">{{submitButtonText}}</button>
+    <button id="workout-add" [hidden]="routineNameSelectControl.value === null" (click)="postAll()">{{submitButtonText}}</button>
     <button id="workout-return" routerLink="">&lt; RETURN TO HOME</button>
-    <form [formGroup]="workoutForm">
+    <form>
     <div>
-        <h1 *ngIf="!routineInput">Routine:</h1>
-        <select *ngIf="routineSelect" [formControl]="routineControl"  name="Routine" id="routine-select" #select  (change)="onOptionSelect(select.value)">
+        <h1>Routine:</h1>
+        <select *ngIf="routineNameSelect" [formControl]="routineNameSelectControl"  name="Routine" id="routine-select" #select  (change)="onRoutineSelect(select.value)">
             <option *ngFor="let routine of routineList" [ngValue]="routine" >{{routine.workoutName}}</option>
             <option value="New" selected>New Routine</option>
         </select>
     </div>
     <div>
 
-        <input *ngIf="routineInput" class="workout-info" type="text" id="routine_name" placeholder="Routine Name" (blur)="onBlur('routineInput','routine_name')"/>
+        <input *ngIf="!routineNameSelect" class="workout-info" type="text" id="routine_name" placeholder="Routine Name" (blur)="onBlur('routineInput','routine_name')"/>
     </div>
     <div id="workout-day-select-container">
         <div>
-        <h1 *ngIf="workoutTitle">Workout:</h1>
-        <select id="test" [formControl]="workoutNameControl" *ngIf="selectedWorkout!==undefined && newWorkoutInput" #workoutSelect (change)="onWorkoutSelect()">
+        <h1 *ngIf="workoutNameSelect || newWorkoutNameInput">Workout:</h1>
+        <select id="test" [formControl]="workoutNameSelectControl" *ngIf="selectedWorkout!==undefined && workoutNameSelect" #workoutSelect (change)="onWorkoutSelect()">
             <option hidden value="hidden"></option>
             <option  *ngFor="let routine of selectedWorkout.routine" [ngValue]="routine" value="{{routine.id}}" >
                 {{routine.routineName}} 
@@ -63,12 +63,12 @@
             <option value="New">New Workout</option>
         </select>
         
-        <input *ngIf="workoutInput"  class="workout-info" id="name" type="text" required placeholder="WORKOUT NAME" (blur)="onBlur('newWorkoutInput','name')"/>
+        <input *ngIf="newWorkoutNameInput"  class="workout-info" id="name" type="text" required placeholder="WORKOUT NAME" (blur)="onBlur('newWorkoutInput','name')"/>
         </div>
 
         <div>
-        <h1 *ngIf="dayInput">Day:</h1>
-        <select [formControl]="dayControl" *ngIf="dayInput" id="day-select" >
+        <h1 *ngIf="dayNameSelect">Day:</h1>
+        <select [formControl]="dayNameSelectControl" *ngIf="dayNameSelect" id="day-select" >
             <option hidden value="hidden"></option>
             <option *ngFor="let day of routineDotw" value="{{day.num}}">{{day.name}}</option>
         </select>
@@ -94,11 +94,11 @@
                 <input type="number" value="{{exercise.routine_rest%60}}" required id="{{exercise.id|| exercise.exercise.id}}-seconds" class="list-reps-min-input" min=1 max=99 placeholder="30"/>
                 S
             </div>
-            <button class="delete-button" (click)="deleteElement(exercise)">X</button>
+            <button class="delete-button" (click)="deleteItemFromWorkout(exercise)">X</button>
         </div>
         
     </div>
-    <button  *ngIf="addExerciseButton" id="add-exercise-button" class="button" (click)="showModal()">ADD EXERCISE</button>
+    <button  *ngIf="addExerciseButton" id="add-exercise-button" class="button" (click)="showExerciseListModal()">ADD EXERCISE</button>
     </form>
 
 </div>
