@@ -23,8 +23,7 @@ speed-measure-plugin*.json
 .settings/
 *.sublime-workspace
 
-environment.ts
-environment.prod.ts
+src/environments/**
 
 /spring/src/main/java/com/johngmarshall/panfit/security/TokenProperties.java
 
