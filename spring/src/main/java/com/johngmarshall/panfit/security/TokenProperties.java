@@ -16,7 +16,7 @@ public class TokenProperties {
 
   private int expiration = 86400;
 
-  private String secret = "JwtSecretKey";
+  private String secret = "JwtSecret";
 
   public String getLoginPath() {
     return loginPath;

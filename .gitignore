@@ -24,6 +24,9 @@ speed-measure-plugin*.json
 *.sublime-workspace
 
 environment.ts
+environment.prod.ts
+
+/spring/src/main/java/com/johngmarshall/panfit/security/TokenProperties.java
 
 # IDE - VSCode
 .vscode/*
